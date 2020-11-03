@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-card uk-card-default" :class="{selected: selected, 'uk-text-muted': !boat.id}">
+  <div class="uk-card uk-card-default" :class="{selected: selected, reserved: reserved, 'uk-text-muted': !boat.id}">
     <div class="uk-card-header">
       <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">{{ boat.name }}</h3>
     </div>
@@ -32,7 +32,8 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props: {
     boat: Object,
-    selected: Boolean
+    selected: Boolean,
+    reserved: Boolean
   },
   methods: {
     enabled (permission) {
@@ -56,10 +57,15 @@ export default defineComponent({
 .uk-card {
   margin: 0.5rem;
   border: 1px solid transparent;
+  transition: border .2s ease-in-out;
 }
 
 .selected {
   border-color: #32d296;
+}
+
+.reserved {
+
 }
 
 .uk-card-title {
