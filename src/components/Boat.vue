@@ -26,8 +26,10 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
+<script>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
   props: {
     boat: Object,
     selected: Boolean
@@ -47,7 +49,7 @@ export default {
       }
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -69,23 +69,23 @@
 </template>
 
 <script lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { Boat, boats } from '@/boats'
 
 function pluck (prop: keyof Boat) {
   return Array.from(new Set(boats.map(boat => boat[prop])))
 }
 
-const types = pluck('type').sort((a, b) => a.localeCompare(b))
+const types = (pluck('type') as string[]).sort((a, b) => a.localeCompare(b))
 const uses = pluck('use')
 
-export default {
+export default defineComponent({
   props: ['filters'],
 
   setup (props, { emit }) {
     const showModal = ref<boolean>(false)
     const newFilters = reactive({ ...props.filters })
-    const activeFilters: ComputedRef = computed(() => {
+    const activeFilters = computed(() => {
       return Object.fromEntries(
         Object.entries(props.filters).filter(([, value]) => value !== null)
       )
@@ -111,7 +111,7 @@ export default {
       commitFilters
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
