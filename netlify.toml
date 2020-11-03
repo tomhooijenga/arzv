@@ -3,10 +3,10 @@ publish = "dist/"
 command = "npm run build"
 
 [[redirects]]
+from = "/proxy/*"
+to = "https://:splat"
+
+[[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
-
-[[redirects]]
-from = "/proxy/*"
-to = "https://:splat"
