@@ -48,7 +48,7 @@
       </div>
 
       <div class="uk-margin">
-        <label class="uk-form-label" for="use">Gewicht</label>
+        <label class="uk-form-label" for="weight">Gewicht</label>
         <div class="uk-flex">
           <input id="weight"
                  v-model="newFilters.weight"
