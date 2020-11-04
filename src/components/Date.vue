@@ -83,7 +83,7 @@ export default defineComponent({
     watch(
       () => starts.value,
       () => {
-        state.start = starts.value[0]
+        state.start = starts.value.includes(state.start) ? state.start : starts.value[0]
       }
     )
 
@@ -94,7 +94,7 @@ export default defineComponent({
     watch(
       () => ends.value,
       () => {
-        state.end = ends.value[0]
+        state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
       }
     )
 
