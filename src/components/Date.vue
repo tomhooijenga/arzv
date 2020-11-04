@@ -26,7 +26,7 @@
       </div>
 
       <div>
-        <label class="uk-form-label">van</label>
+        <label class="uk-form-label">tot</label>
         <select v-model="state.end"
                 class="uk-select">
           <option v-for="time in ends"

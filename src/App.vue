@@ -2,7 +2,7 @@
   <div class="uk-container">
     <filterses @filter="updateList" :filters="filters"></filterses>
   </div>
-  <login v-if="!token"></login>
+  <login v-if="!token" @authenticate="t => token = t"></login>
   <date v-else @reservation="updateActiveReservations" />
 
   <div class="uk-container">
@@ -90,7 +90,7 @@ export default {
         return null
       }
 
-      return reservedBoats.value.get(toRaw(boat))
+      return reservedBoats.value.get(boat)
     }
 
     onMounted(async () => {

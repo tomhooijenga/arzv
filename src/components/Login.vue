@@ -1,33 +1,35 @@
 <template>
   <div class="uk-section uk-section-muted uk-margin">
     <div class="uk-container uk-text-center">
-      <button type="button"
-              class="uk-button uk-button-secondary"
-              @click="showModal = true">
+      <button class="uk-button uk-button-secondary uk-margin-bottom"
+              type="button"
+              @click="state.showModal = true">
         Log in
-      </button> <br />
+      </button>
+      <br/>
       om reserveringen te kunnen zien en maken.
     </div>
   </div>
-  <modal :show="showModal"
-         @close="showModal = false">
-    <div class="uk-form-stacked">
+  <modal :show="state.showModal"
+         @close="state.showModal = false">
+    <p v-if="state.error" class="uk-text-danger">Ongeldige gebruikersnaam of wachtwoord</p>
 
+    <div class="uk-form-stacked">
       <div class="uk-margin">
         <label class="uk-form-label" for="username">Gebruikersnaam</label>
         <div class="uk-flex">
           <input id="username"
-                 v-model="username"
+                 v-model="state.username"
                  class="uk-input"
                  type="text"/>
         </div>
       </div>
 
       <div class="uk-margin">
-        <label class="uk-form-label" for="username">Wachtwoord</label>
+        <label class="uk-form-label" for="password">Wachtwoord</label>
         <div class="uk-flex">
           <input id="password"
-                 v-model="password"
+                 v-model="state.password"
                  class="uk-input"
                  type="password"/>
         </div>
@@ -35,30 +37,77 @@
     </div>
     <div class="uk-flex uk-flex-nowrap">
       <button class="uk-button uk-button-primary" type="button" @click="login">Inloggen</button>
-      <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
+      <button class="uk-button uk-button-default uk-margin-left" type="button" @click="state.showModal = false">
+        Annuleer
+      </button>
+    </div>
+
+    <div v-if="state.loading"
+         class="uk-overlay-default uk-position-cover uk-flex">
+      <div class="spinner uk-margin-auto uk-margin-auto-vertical"></div>
     </div>
   </modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import modal from '@/components/Modal.vue'
+import { authenticate } from '@/arzv'
 
 export default defineComponent({
   components: {
     modal
   },
 
-  setup () {
+  setup (_, { emit }) {
+    const state = reactive({
+      username: '',
+      password: '',
+      error: false,
+      loading: false,
+      showModal: false
+    })
+
+    async function login () {
+      state.loading = true
+      try {
+        const result = await authenticate(state.username, state.password)
+
+        if (result.success) {
+          state.error = false
+          state.showModal = false
+          emit('authenticate', result.token)
+        } else {
+          state.error = true
+        }
+      } finally {
+        state.loading = false
+      }
+    }
+
     return {
-      username: ref(''),
-      password: ref(''),
-      showModal: ref(false)
+      state,
+      login
     }
   }
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+.spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: .25em solid #1e87f0;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border .75s linear infinite;
+}
 
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

@@ -17,9 +17,7 @@ export async function authenticate (username: string, password: string): Promise
       password
     })
   })
-  const json = await response.json()
-
-  return json.token
+  return response.json()
 }
 
 export async function checkToken (token: string): Promise<boolean> {
