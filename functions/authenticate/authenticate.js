@@ -6,17 +6,20 @@ const handler = async function (event) {
   try {
     const { body } = event
     const { username, password } = JSON.parse(body)
+
+    // Create own session id the one received from server does not always work
     const token = crypto.randomBytes(13).toString('hex')
     const response = await fetch('https://roei.arzv.nl/login.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': `PHPSESSID=${token}`
+        Cookie: `PHPSESSID=${token}`
       },
       body: qs.stringify({
         username,
         password,
-        remember: 'on'
+        remember: 'on',
+        remember_device: 'on'
       })
     })
 
@@ -38,12 +41,11 @@ const handler = async function (event) {
       })
     }
   } catch (error) {
-    // output to netlify function log
-    console.log(error)
     return {
       statusCode: 500,
-      // Could be a custom message or object i.e. JSON.stringify(err)
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({
+        error: error.message
+      })
     }
   }
 }

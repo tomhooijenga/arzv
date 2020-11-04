@@ -9,6 +9,17 @@ const handler = async function (event) {
         cookie: `PHPSESSID=${authorization}`
       }
     })
+
+    if (response.url.endsWith('login.php')) {
+      return {
+        statusCode: 403,
+        body: JSON.stringify({
+          success: false,
+          error: 'Token expired'
+        })
+      }
+    }
+
     const doc = await response.text()
     const $ = cheerio.load(doc)
 
@@ -40,13 +51,14 @@ const handler = async function (event) {
 
     return {
       statusCode: 200,
-      body: JSON.stringify(reservations)
+      body: JSON.stringify({
+        success: true,
+        reservations
+      })
     }
   } catch (error) {
-    // output to netlify function log
     return {
       statusCode: 500,
-      // Could be a custom message or object i.e. JSON.stringify(err)
       body: JSON.stringify({
         error: error.message
       })

@@ -94,14 +94,21 @@ export default {
 
     onMounted(async () => {
       if (token) {
-        reservations.value = await getReservations(token.value)
+        const valid = await checkToken(token.value)
+        if (valid) {
+          reservations.value = await getReservations(token.value)
+        } else {
+          token.value = ''
+        }
       }
     })
 
     watch(
       () => token.value,
-      async () => {
-        reservations.value = await getReservations(token.value)
+      async (to) => {
+        if (to) {
+          reservations.value = await getReservations(token.value)
+        }
       }
     )
 
