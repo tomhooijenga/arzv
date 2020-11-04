@@ -17,60 +17,59 @@
       </button>
   </div>
   <hr/>
-  <div v-if="showModal"
-       class="uk-modal uk-open uk-flex"
-       @click.self="showModal = false">
-    <div class="uk-modal-dialog uk-margin-auto-vertical uk-modal-body">
-      <div class="uk-form-stacked">
-        <div class="uk-margin">
-          <label class="uk-form-label" for="type">Type</label>
-          <select id="type"
-                  v-model="newFilters.type"
-                  class="uk-select">
-            <option :value="null">Alle</option>
-            <option v-for="type in types"
-                    :key="type">
-              {{type}}
-            </option>
-          </select>
-        </div>
 
-        <div class="uk-margin">
-          <label class="uk-form-label" for="use">Gebruik</label>
-          <select id="use"
-                  v-model="newFilters.use"
-                  class="uk-select">
-            <option :value="null">Alle</option>
-            <option v-for="use in uses"
-                    :key="use">
-              {{use}}
-            </option>
-          </select>
-        </div>
+  <modal :show="showModal"
+         @close="showModal = false">
+    <div class="uk-form-stacked">
+      <div class="uk-margin">
+        <label class="uk-form-label" for="type">Type</label>
+        <select id="type"
+                v-model="newFilters.type"
+                class="uk-select">
+          <option :value="null">Alle</option>
+          <option v-for="type in types"
+                  :key="type">
+            {{type}}
+          </option>
+        </select>
+      </div>
 
-        <div class="uk-margin">
-          <label class="uk-form-label" for="use">Gewicht</label>
-          <div class="uk-flex">
-            <input id="weight"
-                   v-model="newFilters.weight"
-                   class="uk-range"
-                   max="100"
-                   min="50"
-                   step="5"
-                   type="range"/>
-            <span>{{ newFilters.weight || 'geen' }}</span>
-          </div>
+      <div class="uk-margin">
+        <label class="uk-form-label" for="use">Gebruik</label>
+        <select id="use"
+                v-model="newFilters.use"
+                class="uk-select">
+          <option :value="null">Alle</option>
+          <option v-for="use in uses"
+                  :key="use">
+            {{use}}
+          </option>
+        </select>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label" for="use">Gewicht</label>
+        <div class="uk-flex">
+          <input id="weight"
+                 v-model="newFilters.weight"
+                 class="uk-range"
+                 max="100"
+                 min="50"
+                 step="5"
+                 type="range"/>
+          <span>{{ newFilters.weight || 'geen' }}</span>
         </div>
       </div>
-      <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
-      <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
     </div>
-  </div>
+    <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
+    <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
+  </modal>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref } from 'vue'
 import { Boat, boats } from '@/boats'
+import modal from '@/components/Modal.vue'
 
 function pluck (prop: keyof Boat) {
   return Array.from(new Set(boats.map(boat => boat[prop])))
@@ -81,6 +80,10 @@ const uses = pluck('use')
 
 export default defineComponent({
   props: ['filters'],
+
+  components: {
+    modal
+  },
 
   setup (props, { emit }) {
     const showModal = ref<boolean>(false)
