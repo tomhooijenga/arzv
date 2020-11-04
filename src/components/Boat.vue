@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-card uk-card-default" :class="{selected: selected, reserved: reserved, 'uk-text-muted': !boat.id}">
+  <div class="uk-card uk-card-default" :class="{selected: selected, 'uk-text-muted': !boat.id}">
     <div class="uk-card-header">
       <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">{{ boat.name }}</h3>
     </div>
@@ -22,6 +22,9 @@
         <span v-if="boat.weight">{{ boat.weight}}kg</span>
         <span v-else>Geen</span>
       </div>
+      <div v-if="reservation" class="uk-margin-top">
+        Afgeschreven van {{reservation.start}} tot {{reservation.end}}
+      </div>
     </div>
   </div>
 </template>
@@ -33,7 +36,7 @@ export default defineComponent({
   props: {
     boat: Object,
     selected: Boolean,
-    reserved: Boolean
+    reservation: Object
   },
   methods: {
     enabled (permission) {
@@ -62,10 +65,6 @@ export default defineComponent({
 
 .selected {
   border-color: #32d296;
-}
-
-.reserved {
-
 }
 
 .uk-card-title {

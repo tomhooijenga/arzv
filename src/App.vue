@@ -1,29 +1,32 @@
 <template>
   <div class="uk-container">
     <filterses @filter="updateList" :filters="filters"></filterses>
-    <login v-if="!token"></login>
-    <date v-else @reservation="updateActiveReservations" />
+  </div>
+  <login v-if="!token"></login>
+  <date v-else @reservation="updateActiveReservations" />
+
+  <div class="uk-container">
     <div class="boats">
       <boat v-for="boat in boats"
             :key="boat.name"
             :boat="boat"
             :selected="selected.has(boat)"
-            :reserved="isReserved(boat)"
-            @click="boat.id && !isReserved(boat) && toggle(boat)"/>
+            :reservation="reservation(boat)"
+            @click="boat.id && !reservation(boat) && toggle(boat)"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import 'uikit/dist/css/uikit.css'
-import { onMounted, reactive, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch, toRaw } from 'vue'
 import { Boat, boats as boatsList } from './boats'
 import boat from '@/components/Boat.vue'
 import filters from '@/components/Filters.vue'
 import login from '@/components/Login.vue'
 import date from '@/components/Date.vue'
 import { filter } from '@/filter'
-import { getReservations, Reservation } from '@/arzv'
+import { checkToken, getReservations, Reservation } from '@/arzv'
 import useLocalStorage from '@/use-local-storage'
 
 export default {
@@ -57,7 +60,7 @@ export default {
     }
 
     const reservations = ref<Reservation[]>([])
-    const reservedBoats = ref<Set<Boat>>(new Set())
+    const reservedBoats = ref<Map<Boat, Reservation>>(new Map<Boat, Reservation>())
     const userReservation = ref<null | { start: Date; end: Date }>(null)
     const token = useLocalStorage<string>('token')
 
@@ -65,10 +68,10 @@ export default {
       userReservation.value = newUserReservation
 
       if (newUserReservation === null) {
-        reservedBoats.value = new Set()
+        reservedBoats.value = new Map()
       } else {
         const { start: userStart, end: userEnd } = newUserReservation
-        reservedBoats.value = new Set(
+        reservedBoats.value = new Map(
           reservations
             .value
             .filter(({ start, end }) => {
@@ -77,19 +80,17 @@ export default {
               }
               return end >= userStart && end <= userEnd
             })
-            .map(({ boat }) => boat)
+            .map((reservation) => [reservation.boat, reservation])
         )
       }
-
-      console.log(reservedBoats.value)
     }
 
-    function isReserved (boat: Boat) {
+    function reservation (boat: Boat) {
       if (userReservation.value === null) {
-        return false
+        return null
       }
 
-      return reservedBoats.value.has(boat)
+      return reservedBoats.value.get(toRaw(boat))
     }
 
     onMounted(async () => {
@@ -112,10 +113,11 @@ export default {
       }
     )
 
+    // todo: check token
     // todo: show active reservation
+    // todo: cancel reservation
     // todo: name & instruction filter
     // todo: add reservation
-    // todo: cancel reservation
 
     return {
       filters,
@@ -124,7 +126,7 @@ export default {
       updateList,
       toggle,
       token,
-      isReserved,
+      reservation,
       updateActiveReservations
     }
   }
