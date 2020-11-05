@@ -22,7 +22,8 @@
 
       <button :disabled="!state.valid"
               class="uk-button uk-button-primary uk-display-block uk-margin-small uk-margin-auto"
-              type="button">
+              type="button"
+              @click="create">
         {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
       </button>
     </div>
@@ -31,7 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, watch, computed } from 'vue'
-import { checkReservation, Reservation } from '@/arzv'
+import { Auth, checkReservation, createReservation, Reservation } from '@/arzv'
 import { Boat } from '@/boats'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
@@ -42,8 +43,8 @@ export default defineComponent({
       type: Array as PropType<Boat[]>,
       required: true
     },
-    token: {
-      type: String,
+    auth: {
+      type: Object as PropType<Auth>,
       required: true
     },
     reservation: Object as PropType<Reservation>
@@ -61,10 +62,10 @@ export default defineComponent({
     })
 
     watch(
-      [() => state.full, () => props.token, () => props.boats, () => props.reservation],
+      [() => state.full, () => props.auth, () => props.boats, () => props.reservation],
       async () => {
-        if (state.full && props.token && props.boats && props.reservation) {
-          state.valid = await checkReservation(props.token, props.boats, props.reservation)
+        if (state.full && props.auth && props.boats && props.reservation) {
+          state.valid = await checkReservation(props.auth, props.boats, props.reservation)
         }
       }
     )
@@ -93,10 +94,17 @@ export default defineComponent({
       }
     }
 
+    async function create () {
+      if (props.reservation) {
+        await createReservation(props.auth, props.boats, props.reservation)
+      }
+    }
+
     return {
       state,
       title,
-      unselectBoat
+      unselectBoat,
+      create
     }
   }
 })

@@ -28,6 +28,7 @@ const handler = async function (event) {
         statusCode: 200,
         body: JSON.stringify({
           success: true,
+          id: username,
           token
         })
       }

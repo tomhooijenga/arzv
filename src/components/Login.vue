@@ -82,7 +82,7 @@ export default defineComponent({
         if (result.success) {
           state.error = false
           state.showModal = false
-          emit('authenticate', result.token)
+          emit('authenticate', { token: result.token, id: result.id })
         } else {
           state.error = true
         }

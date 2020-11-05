@@ -9,7 +9,13 @@ export interface Reservation {
   person: string;
 }
 
-export async function authenticate (username: string, password: string): Promise<{ success: true; token: string } | { success: false; error: string}> {
+export interface Auth {
+  token: string;
+
+  id: string;
+}
+
+export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
   const response = await fetch(root + 'authenticate', {
     method: 'POST',
     body: JSON.stringify({
@@ -47,11 +53,11 @@ export async function getReservations (token: string): Promise<Reservation[]> {
   }))
 }
 
-export async function checkReservation (token: string, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
+export async function checkReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
   const response = await fetch(root + 'check-reservation', {
     method: 'POST',
     headers: {
-      authorization: token
+      authorization: auth.token
     },
     body: JSON.stringify({
       ...reservation,
@@ -60,4 +66,21 @@ export async function checkReservation (token: string, boats: Boat[], reservatio
   })
   const { available } = await response.json()
   return boats.every(({ id }) => available[id!])
+}
+
+export async function createReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
+  const response = await fetch(root + 'check-reservation', {
+    method: 'POST',
+    headers: {
+      authorization: auth.token
+    },
+    body: JSON.stringify({
+      ...reservation,
+      boats: boats.map(({ id }) => id),
+      // eslint-disable-next-line
+      user_id: auth.id
+    })
+  })
+  const { success } = await response.json()
+  return success
 }

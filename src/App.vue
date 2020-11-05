@@ -2,7 +2,7 @@
   <div class="uk-container">
     <filterses @filter="updateList" :filters="filters"></filterses>
   </div>
-  <login v-if="!token" @authenticate="t => token = t"></login>
+  <login v-if="!auth" @authenticate="setAuthentication"></login>
   <date v-else @reservation="updateActiveReservations" />
 
   <div class="uk-container">
@@ -18,8 +18,8 @@
 
   <reserve :boats="Array.from(selected)"
            :reservation="userReservation"
-           :token="token"
-           v-if="token"
+           :auth="auth"
+           v-if="auth"
            @unselect="boat => selected.delete(boat)"/>
 </template>
 
@@ -76,10 +76,16 @@ export default {
       }
     }
 
+    const auth = useLocalStorage('auth')
+    const token = ref<string>('')
+    function setAuthentication (newAuth: { token: string; id: string }) {
+      auth.value = newAuth
+      token.value = newAuth.token
+    }
+
     const reservations = ref<Reservation[]>([])
     const reservedBoats = ref<Map<Boat, Reservation>>(new Map<Boat, Reservation>())
     const userReservation = ref<null | { start: Date; end: Date }>(null)
-    const token = useLocalStorage<string>('token')
 
     function updateActiveReservations (newUserReservation: { start: Date; end: Date }) {
       userReservation.value = newUserReservation
@@ -107,7 +113,7 @@ export default {
     }
 
     onMounted(async () => {
-      if (token) {
+      if (token.value) {
         const valid = await checkToken(token.value)
         if (valid) {
           reservations.value = await getReservations(token.value)
@@ -136,7 +142,8 @@ export default {
       selected,
       updateList,
       toggle,
-      token,
+      auth,
+      setAuthentication,
       userReservation,
       boatReservation,
       updateActiveReservations
