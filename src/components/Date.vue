@@ -2,12 +2,12 @@
   <div class="uk-background-muted uk-padding uk-margin uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
-        <label :class="{'uk-background-muted': state.day === state.today}"
+        <label :class="{'uk-background-default': state.day === state.today}"
                class="uk-button uk-button-default uk-width-1-1">
           <input v-model="state.day" :value="state.today" class="uk-hidden" name="start-day" type="radio"/>
           Vandaag
         </label>
-        <label :class="{'uk-background-muted': state.day === state.tomorrow}"
+        <label :class="{'uk-background-default': state.day === state.tomorrow}"
                class="uk-button uk-button-default uk-width-1-1">
           <input v-model="state.day" :value="state.tomorrow" class="uk-hidden" name="start-day" type="radio"/>
           Morgen
