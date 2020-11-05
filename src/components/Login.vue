@@ -14,14 +14,16 @@
          @close="state.showModal = false">
     <p v-if="state.error" class="uk-text-danger">Ongeldige gebruikersnaam of wachtwoord</p>
 
-    <div class="uk-form-stacked">
+    <form class="uk-form-stacked"
+          @submit.prevent="login">
       <div class="uk-margin">
         <label class="uk-form-label" for="username">Gebruikersnaam</label>
         <div class="uk-flex">
           <input id="username"
                  v-model="state.username"
                  class="uk-input"
-                 type="text"/>
+                 type="text"
+                 required/>
         </div>
       </div>
 
@@ -31,16 +33,18 @@
           <input id="password"
                  v-model="state.password"
                  class="uk-input"
-                 type="password"/>
+                 type="password"
+                 required/>
         </div>
       </div>
-    </div>
-    <div class="uk-flex uk-flex-nowrap">
-      <button class="uk-button uk-button-primary" type="button" @click="login">Inloggen</button>
-      <button class="uk-button uk-button-default uk-margin-left" type="button" @click="state.showModal = false">
-        Annuleer
-      </button>
-    </div>
+
+      <div class="uk-flex uk-flex-nowrap">
+        <button class="uk-button uk-button-primary" type="submit">Inloggen</button>
+        <button class="uk-button uk-button-default uk-margin-left" type="button" @click="state.showModal = false">
+          Annuleer
+        </button>
+      </div>
+    </form>
 
     <div v-if="state.loading"
          class="uk-overlay-default uk-position-cover uk-flex">
