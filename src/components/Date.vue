@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-background-muted uk-padding uk-margin uk-form-stacked">
+  <div class="uk-background-muted uk-padding uk-padding-remove-horizontal uk-margin uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
         <label :class="{'uk-background-default': state.day === state.today}"
@@ -53,8 +53,8 @@ export default defineComponent({
     const now = new Date()
     const state = reactive({
       day: '',
-      start: '',
-      end: '',
+      start: '08:00',
+      end: '08:30',
       today: format(now, dateFormat),
       tomorrow: format(addDays(now, 1), dateFormat)
     })
@@ -74,15 +74,17 @@ export default defineComponent({
         hour += 1
       }
 
-      for (let i = hour; i <= 23; i++) {
+      for (let i = hour; i <= 22; i++) {
         _starts.push(`${i.toString().padStart(2, '0')}:00`)
         _starts.push(`${i.toString().padStart(2, '0')}:30`)
       }
 
+      // 23:30 is only for ends
+      _starts.push('23:00')
+
       return _starts
     })
 
-    state.start = starts.value[0]
     watch(
       () => starts.value,
       () => {
@@ -91,7 +93,10 @@ export default defineComponent({
     )
 
     const ends = computed(() => {
-      return starts.value.slice(starts.value.indexOf(state.start) + 1)
+      return [
+        ...starts.value.slice(starts.value.indexOf(state.start) + 1),
+        '23:30'
+      ]
     })
 
     watch(
