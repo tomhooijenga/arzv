@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-background-muted uk-padding uk-padding-remove-horizontal uk-margin uk-form-stacked">
+  <div class="uk-section uk-section-muted uk-margin-small uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
         <label :class="{'uk-background-default': state.day === state.today}"
@@ -14,7 +14,7 @@
         </label>
       </div>
 
-      <div class="uk-margin">
+      <div class="uk-margin-small">
         <label class="uk-form-label">van</label>
         <select v-model="state.start"
                 class="uk-select">

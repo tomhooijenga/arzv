@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-flex uk-margin-top uk-overflow-auto">
+  <div class="uk-flex uk-margin-small-top uk-overflow-auto">
     <button class="uk-button uk-button-primary"
             type="button"
             @click="showModal = true">
@@ -16,7 +16,6 @@
         <span class="close">🗙</span>
       </button>
   </div>
-  <hr/>
 
   <modal :show="showModal"
          @close="showModal = false">
@@ -57,7 +56,7 @@
                  min="50"
                  step="5"
                  type="range"/>
-          <span>{{ newFilters.weight || 'geen' }}</span>
+          <span class="uk-margin-left uk-text-nowrap">{{ newFilters.weight ? `${newFilters.weight} kg` : 'geen' }}</span>
         </div>
       </div>
     </div>

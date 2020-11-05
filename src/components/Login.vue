@@ -1,7 +1,7 @@
 <template>
-  <div class="uk-section uk-section-muted uk-margin">
+  <div class="uk-section uk-section-muted uk-margin-small">
     <div class="uk-container uk-text-center">
-      <button class="uk-button uk-button-secondary uk-margin-bottom"
+      <button class="uk-button uk-button-secondary uk-margin-small-bottom"
               type="button"
               @click="state.showModal = true">
         Log in
