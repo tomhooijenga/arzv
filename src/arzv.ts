@@ -46,3 +46,18 @@ export async function getReservations (token: string): Promise<Reservation[]> {
     person
   }))
 }
+
+export async function checkReservation (token: string, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
+  const response = await fetch(root + 'check-reservation', {
+    method: 'POST',
+    headers: {
+      authorization: token
+    },
+    body: JSON.stringify({
+      ...reservation,
+      boats: boats.map(({ id }) => id)
+    })
+  })
+  const { available } = await response.json()
+  return boats.every(({ id }) => available[id!])
+}

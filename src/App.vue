@@ -11,12 +11,15 @@
             :key="boat.name"
             :boat="boat"
             :selected="selected.has(boat)"
-            :reservation="reservation(boat)"
-            @click="boat.id && !reservation(boat) && toggle(boat)"/>
+            :reservation="boatReservation(boat)"
+            @click="boat.id && !boatReservation(boat) && toggle(boat)"/>
     </boat-list>
   </div>
 
-  <reserve :boats="Array.from(selected)" />
+  <reserve :boats="Array.from(selected)"
+           :reservation="userReservation"
+           :token="token"
+           v-if="token"/>
 </template>
 
 <script lang="ts">
@@ -91,7 +94,7 @@ export default {
       }
     }
 
-    function reservation (boat: Boat) {
+    function boatReservation (boat: Boat) {
       if (userReservation.value === null) {
         return null
       }
@@ -133,7 +136,8 @@ export default {
       updateList,
       toggle,
       token,
-      reservation,
+      userReservation,
+      boatReservation,
       updateActiveReservations
     }
   }

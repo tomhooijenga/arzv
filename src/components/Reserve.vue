@@ -1,34 +1,50 @@
 <template>
-    <section class="drawer"
-         :class="{show: boats.length > 0, full: state.full}">
-      <div class="header"
-           :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}">
-        <div class="uk-container"
-             @click="state.full = !state.full">
-          <div class="uk-padding-small uk-padding-remove-horizontal">
-            {{ boats.length === 1 ? '1 boot' : `${boats.length} boten`}} afschrijven
-          </div>
+  <section :class="{show: boats.length > 0, full: state.full}"
+           class="drawer">
+    <div :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}"
+         class="header">
+      <div class="uk-container"
+           @click="state.full = !state.full">
+        <div class="uk-padding-small uk-padding-remove-horizontal">
+          {{ title }}
         </div>
       </div>
+    </div>
 
-      <div class="uk-container">
-        <boat-list>
-          <boat v-for="boat in boats"
-                :key="boat.name"
-                :boat="boat"/>
-        </boat-list>
-      </div>
-    </section>
+    <div class="uk-container">
+      <boat-list>
+        <boat v-for="boat in boats"
+              :key="boat.name"
+              :boat="boat"/>
+      </boat-list>
+
+      <button :disabled="!state.valid"
+              class="uk-button uk-button-primary uk-display-block uk-margin uk-margin-auto"
+              type="button">
+        {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
+      </button>
+    </div>
+  </section>
 </template>
 
-<script>
-import { defineComponent, reactive } from 'vue'
+<script lang="ts">
+import { defineComponent, PropType, reactive, watch, computed } from 'vue'
+import { checkReservation, Reservation } from '@/arzv'
+import { Boat } from '@/boats'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 
 export default defineComponent({
   props: {
-    boats: Array
+    boats: {
+      type: Array as PropType<Boat[]>,
+      required: true
+    },
+    token: {
+      type: String,
+      required: true
+    },
+    reservation: Object as PropType<Reservation>
   },
 
   components: {
@@ -36,43 +52,69 @@ export default defineComponent({
     boatList
   },
 
-  setup () {
+  setup (props) {
     const state = reactive({
-      full: false
+      full: false,
+      valid: true
+    })
+
+    watch(
+      () => state.full,
+      async (to) => {
+        if (to && props.reservation) {
+          state.valid = await checkReservation(props.token, props.boats, props.reservation)
+        }
+      }
+    )
+
+    const title = computed(() => {
+      const boats = props.boats
+
+      if (boats.length === 0) {
+        return ' '
+      }
+      if (boats.length === 1) {
+        return boats[0].name
+      }
+      if (boats.length === 2) {
+        return `${boats[0].name} en ${boats[1].name}`
+      }
+      return `${boats[0].name}, ${boats[1].name} en ${boats.length - 2} ${boats.length - 2 === 1 ? 'andere' : 'anderen'}`
     })
 
     return {
-      state
+      state,
+      title
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-  .drawer {
-    position: fixed;
-    width: 100%;
-    background: white;
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-    bottom: 0;
-    transform: translateY(100%);
-    transition: transform .2s ease-in-out, height .2s ease-in-out;
-    height: 54px;
-    overscroll-behavior: none;
-  }
+.drawer {
+  position: fixed;
+  width: 100%;
+  background: white;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  bottom: 0;
+  transform: translateY(100%);
+  transition: transform .2s ease-in-out, height .2s ease-in-out;
+  height: 54px;
+  overscroll-behavior: none;
+}
 
-  .show {
-    transform: translateY(0);
-  }
+.show {
+  transform: translateY(0);
+}
 
-  .full {
-    height: 100vh;
-    overflow-y: auto;
-  }
+.full {
+  height: 100vh;
+  overflow-y: auto;
+}
 
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 </style>

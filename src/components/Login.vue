@@ -100,6 +100,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.uk-section {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 .spinner {
   display: inline-block;
   width: 2rem;
