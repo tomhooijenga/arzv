@@ -16,5 +16,6 @@ export default defineComponent({
   display: grid;
   margin: 0 -0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+  grid-auto-rows: minmax(min-content, max-content);
 }
 </style>

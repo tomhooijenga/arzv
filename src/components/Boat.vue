@@ -1,10 +1,10 @@
 <template>
-  <div class="uk-card uk-card-default" :class="{selected: selected, 'uk-text-muted': !boat.id}">
+  <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': !boat.id}">
     <div class="uk-card-header">
       <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">{{ boat.name }}</h3>
     </div>
     <div class=" uk-card-body">
-      <div class="uk-flex uk-flex-between uk-margin-bottom">
+      <div class="uk-flex uk-flex-between uk-margin-small-bottom">
         <span class="uk-text-bold">{{ boat.type }}</span>
         <hr class="uk-divider-vertical uk-height-auto" />
         <span :class="enabled(boat.scull) ? 'uk-text-primary' : ''">
@@ -22,7 +22,7 @@
         <span v-if="boat.weight">{{ boat.weight}} kg</span>
         <span v-else>Geen</span>
       </div>
-      <div v-if="reservation" class="uk-margin-top">
+      <div v-if="reservation" class="uk-margin-small-top">
         Afgeschreven {{ formatTime(reservation.start) }} - {{ formatTime(reservation.end) }}
       </div>
     </div>
