@@ -1,11 +1,12 @@
 <template>
-    <div class="drawer"
+    <section class="drawer"
          :class="{show: boats.length > 0, full: state.full}">
-      <div class="uk-container"
-           :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}"
-           @click="state.full = !state.full">
-        <div class="uk-padding-small uk-padding-remove-horizontal">
-          {{ boats.length === 1 ? '1 boot' : `${boats.length} boten`}} afschrijven
+      <div :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}">
+        <div class="uk-container"
+             @click="state.full = !state.full">
+          <div class="uk-padding-small uk-padding-remove-horizontal">
+            {{ boats.length === 1 ? '1 boot' : `${boats.length} boten`}} afschrijven
+          </div>
         </div>
       </div>
 
@@ -16,7 +17,7 @@
                 :boat="boat"/>
         </boat-list>
       </div>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -48,7 +49,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   .drawer {
-    position: sticky;
+    position: fixed;
+    width: 100%;
     background: white;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
     bottom: 0;
