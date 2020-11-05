@@ -6,36 +6,42 @@
   <date v-else @reservation="updateActiveReservations" />
 
   <div class="uk-container">
-    <div class="boats">
+    <boat-list>
       <boat v-for="boat in boats"
             :key="boat.name"
             :boat="boat"
             :selected="selected.has(boat)"
             :reservation="reservation(boat)"
             @click="boat.id && !reservation(boat) && toggle(boat)"/>
-    </div>
+    </boat-list>
   </div>
+
+  <reserve :boats="Array.from(selected)" />
 </template>
 
 <script lang="ts">
 import 'uikit/dist/css/uikit.css'
-import { onMounted, reactive, ref, watch, toRaw } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import { Boat, boats as boatsList } from './boats'
-import boat from '@/components/Boat.vue'
-import filters from '@/components/Filters.vue'
-import login from '@/components/Login.vue'
-import date from '@/components/Date.vue'
 import { filter } from '@/filter'
 import { checkToken, getReservations, Reservation } from '@/arzv'
 import useLocalStorage from '@/use-local-storage'
+import boat from '@/components/Boat.vue'
+import boatList from '@/components/BoatList.vue'
+import date from '@/components/Date.vue'
+import filters from '@/components/Filters.vue'
+import login from '@/components/Login.vue'
+import reserve from '@/components/Reserve.vue'
 
 export default {
   components: {
     boat,
+    boatList,
+    date,
     // can't have shit in detroit
     filterses: filters,
-    date,
-    login
+    login,
+    reserve
   },
   setup () {
     const filters = reactive<{ }>({
@@ -99,7 +105,7 @@ export default {
         if (valid) {
           reservations.value = await getReservations(token.value)
         } else {
-          token.value = ''
+          // token.value = ''
         }
       }
     })
@@ -113,11 +119,12 @@ export default {
       }
     )
 
-    // todo: check token
-    // todo: show active reservation
+    // v todo: check token
+    // v todo: show active reservation
     // todo: cancel reservation
     // todo: name & instruction filter
     // todo: add reservation
+    // todo: dynamic boats
 
     return {
       filters,
@@ -132,11 +139,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.boats {
-  display: grid;
-  margin: 0 -0.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(250px, auto));
-}
-</style>
