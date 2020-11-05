@@ -1,7 +1,8 @@
 <template>
     <section class="drawer"
          :class="{show: boats.length > 0, full: state.full}">
-      <div :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}">
+      <div class="header"
+           :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}">
         <div class="uk-container"
              @click="state.full = !state.full">
           <div class="uk-padding-small uk-padding-remove-horizontal">
@@ -10,7 +11,7 @@
         </div>
       </div>
 
-      <div class="uk-container uk-overflow-auto">
+      <div class="uk-container">
         <boat-list>
           <boat v-for="boat in boats"
                 :key="boat.name"
@@ -57,6 +58,7 @@ export default defineComponent({
     transform: translateY(100%);
     transition: transform .2s ease-in-out, height .2s ease-in-out;
     height: 54px;
+    overscroll-behavior: none;
   }
 
   .show {
@@ -65,9 +67,12 @@ export default defineComponent({
 
   .full {
     height: 100vh;
+    overflow-y: auto;
   }
 
-  .boats {
-    height: calc(100vh - 54px);
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 </style>
