@@ -19,11 +19,11 @@
       </div>
       <div class="uk-flex uk-flex-between">
         <span :class="useClass('text')">{{ boat.use }}</span>
-        <span v-if="boat.weight">{{ boat.weight}}kg</span>
+        <span v-if="boat.weight">{{ boat.weight}} kg</span>
         <span v-else>Geen</span>
       </div>
       <div v-if="reservation" class="uk-margin-top">
-        Afgeschreven van {{reservation.start}} tot {{reservation.end}}
+        Afgeschreven {{ formatTime(reservation.start) }} - {{ formatTime(reservation.end) }}
       </div>
     </div>
   </div>
@@ -31,6 +31,7 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { format } from 'date-fns'
 
 export default defineComponent({
   props: {
@@ -51,6 +52,9 @@ export default defineComponent({
         [`uk-${prop}-primary`]: use === 'Wedstrijd',
         [`uk-${prop}-warning`]: use === 'Jeugd'
       }
+    },
+    formatTime (date) {
+      return format(date, 'HH:mm')
     }
   }
 })
