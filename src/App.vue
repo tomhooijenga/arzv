@@ -47,16 +47,23 @@ export default {
     reserve
   },
   setup () {
-    const filters = reactive<{ }>({
-      type: null,
-      use: null,
-      weight: null
-    })
+    const initialFilters = useLocalStorage('filters')
+    const filters = reactive<{ }>(initialFilters.value)
     const boats = ref<Boat[]>(boatsList)
 
     function updateList (newFilters: { }) {
       Object.assign(filters, newFilters)
       boats.value = filter(boatsList, newFilters)
+    }
+
+    if (!initialFilters.value) {
+      initialFilters.value = {
+        type: null,
+        use: null,
+        weight: null
+      }
+    } else {
+      updateList(initialFilters.value)
     }
 
     const selected = reactive<Set<Boat>>(new Set())
@@ -108,7 +115,7 @@ export default {
         if (valid) {
           reservations.value = await getReservations(token.value)
         } else {
-          // token.value = ''
+          token.value = ''
         }
       }
     })
