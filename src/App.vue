@@ -19,7 +19,8 @@
   <reserve :boats="Array.from(selected)"
            :reservation="userReservation"
            :token="token"
-           v-if="token"/>
+           v-if="token"
+           @unselect="boat => selected.delete(boat)"/>
 </template>
 
 <script lang="ts">
@@ -80,25 +81,21 @@ export default {
     const userReservation = ref<null | { start: Date; end: Date }>(null)
     const token = useLocalStorage<string>('token')
 
-    function updateActiveReservations (newUserReservation: null | { start: Date; end: Date }) {
+    function updateActiveReservations (newUserReservation: { start: Date; end: Date }) {
       userReservation.value = newUserReservation
 
-      if (newUserReservation === null) {
-        reservedBoats.value = new Map()
-      } else {
-        const { start: userStart, end: userEnd } = newUserReservation
-        reservedBoats.value = new Map(
-          reservations
-            .value
-            .filter(({ start, end }) => {
-              if (start >= userStart && start <= userEnd) {
-                return true
-              }
-              return end >= userStart && end <= userEnd
-            })
-            .map((reservation) => [reservation.boat, reservation])
-        )
-      }
+      const { start: userStart, end: userEnd } = newUserReservation
+      reservedBoats.value = new Map(
+        reservations
+          .value
+          .filter(({ start, end }) => {
+            if (start >= userStart && start <= userEnd) {
+              return true
+            }
+            return end >= userStart && end <= userEnd
+          })
+          .map((reservation) => [reservation.boat, reservation])
+      )
     }
 
     function boatReservation (boat: Boat) {
@@ -120,14 +117,11 @@ export default {
       }
     })
 
-    watch(
-      () => token.value,
-      async (to) => {
-        if (to) {
-          reservations.value = await getReservations(token.value)
-        }
+    watch(token, async (to) => {
+      if (to) {
+        reservations.value = await getReservations(token.value)
       }
-    )
+    })
 
     // v todo: check token
     // v todo: show active reservation

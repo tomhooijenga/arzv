@@ -1,7 +1,10 @@
 <template>
   <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': !boat.id}">
     <div class="uk-card-header">
-      <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">{{ boat.name }}</h3>
+      <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">
+        <input type="checkbox" :checked="selected" />
+        {{ boat.name }}
+      </h3>
     </div>
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">

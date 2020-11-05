@@ -85,12 +85,9 @@ export default defineComponent({
       return _starts
     })
 
-    watch(
-      () => starts.value,
-      () => {
-        state.start = starts.value.includes(state.start) ? state.start : starts.value[0]
-      }
-    )
+    watch(starts, () => {
+      state.start = starts.value.includes(state.start) ? state.start : starts.value[0]
+    })
 
     const ends = computed(() => {
       return [
@@ -99,29 +96,20 @@ export default defineComponent({
       ]
     })
 
-    watch(
-      () => ends.value,
-      () => {
-        state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
-      }
-    )
+    watch(ends, () => {
+      state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
+    })
 
-    watch(
-      () => state,
-      () => {
-        console.log(state.day, state.start, state.end)
-        if (state.day && state.start && state.end) {
-          emit('reservation', {
-            start: new Date(`${state.day} ${state.start}`),
-            end: new Date(`${state.day} ${state.end}`)
-          })
-        } else {
-          emit('reservation', null)
-        }
-      },
-      {
-        deep: true
+    emit('reservation', {
+      start: new Date(`${state.day} ${state.start}`),
+      end: new Date(`${state.day} ${state.end}`)
+    })
+    watch(state, () => {
+      emit('reservation', {
+        start: new Date(`${state.day} ${state.start}`),
+        end: new Date(`${state.day} ${state.end}`)
       })
+    })
 
     return {
       state,

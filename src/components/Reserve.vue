@@ -15,11 +15,13 @@
       <boat-list>
         <boat v-for="boat in boats"
               :key="boat.name"
-              :boat="boat"/>
+              :boat="boat"
+              :selected="true"
+              @click="unselectBoat(boat)"/>
       </boat-list>
 
       <button :disabled="!state.valid"
-              class="uk-button uk-button-primary uk-display-block uk-margin uk-margin-auto"
+              class="uk-button uk-button-primary uk-display-block uk-margin-small uk-margin-auto"
               type="button">
         {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
       </button>
@@ -52,16 +54,16 @@ export default defineComponent({
     boatList
   },
 
-  setup (props) {
+  setup (props, { emit }) {
     const state = reactive({
       full: false,
       valid: true
     })
 
     watch(
-      () => state.full,
-      async (to) => {
-        if (to && props.reservation) {
+      [() => state.full, () => props.token, () => props.boats, () => props.reservation],
+      async () => {
+        if (state.full && props.token && props.boats && props.reservation) {
           state.valid = await checkReservation(props.token, props.boats, props.reservation)
         }
       }
@@ -82,9 +84,19 @@ export default defineComponent({
       return `${boats[0].name}, ${boats[1].name} en ${boats.length - 2} ${boats.length - 2 === 1 ? 'andere' : 'anderen'}`
     })
 
+    function unselectBoat (boat: Boat): void {
+      emit('unselect', boat)
+
+      // Close if it was the last boat
+      if (props.boats.length - 1 === 0) {
+        state.full = false
+      }
+    }
+
     return {
       state,
-      title
+      title,
+      unselectBoat
     }
   }
 })
