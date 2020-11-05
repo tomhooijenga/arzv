@@ -46,6 +46,9 @@ import { addDays, format, getHours, getMinutes } from 'date-fns'
 const dateFormat = 'yyyy-MM-dd'
 
 export default defineComponent({
+
+  emits: ['reservation'],
+
   setup (_, { emit }) {
     const now = new Date()
     const state = reactive({

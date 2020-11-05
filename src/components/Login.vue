@@ -59,6 +59,8 @@ export default defineComponent({
     modal
   },
 
+  emits: ['authenticate'],
+
   setup (_, { emit }) {
     const state = reactive({
       username: '',

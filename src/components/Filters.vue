@@ -81,6 +81,8 @@ const uses = pluck('use')
 export default defineComponent({
   props: ['filters'],
 
+  emits: ['filter'],
+
   components: {
     modal
   },
