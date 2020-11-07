@@ -70,9 +70,8 @@ export default {
         instruction: null,
         name: ''
       }
-    } else {
-      updateList(initialFilters.value)
     }
+    updateList(initialFilters.value)
 
     const selected = reactive<Set<Boat>>(new Set())
     function toggle (boat: Boat) {
