@@ -26,10 +26,10 @@ export async function authenticate (username: string, password: string): Promise
   return response.json()
 }
 
-export async function checkToken (token: string): Promise<boolean> {
+export async function checkToken (auth: Auth): Promise<boolean> {
   const response = await fetch(root + 'check-token', {
     headers: {
-      authorization: token
+      authorization: auth.token
     }
   })
   const { valid } = await response.json()
@@ -37,10 +37,10 @@ export async function checkToken (token: string): Promise<boolean> {
   return valid
 }
 
-export async function getReservations (token: string): Promise<Reservation[]> {
+export async function getReservations (auth: Auth): Promise<Reservation[]> {
   const response = await fetch(root + 'reservations', {
     headers: {
-      authorization: token
+      authorization: auth.token
     }
   })
   const json = await response.json()

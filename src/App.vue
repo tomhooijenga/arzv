@@ -28,7 +28,7 @@ import 'uikit/dist/css/uikit.css'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { Boat, boats as boatsList } from './boats'
 import { filter } from '@/filter'
-import { checkToken, getReservations, Reservation } from '@/arzv'
+import { Auth, checkToken, getReservations, Reservation } from '@/arzv'
 import useLocalStorage from '@/use-local-storage'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
@@ -76,11 +76,9 @@ export default {
       }
     }
 
-    const auth = useLocalStorage('auth')
-    const token = ref<string>('')
+    const auth = useLocalStorage<Auth | null>('auth')
     function setAuthentication (newAuth: { token: string; id: string }) {
       auth.value = newAuth
-      token.value = newAuth.token
     }
 
     const reservations = ref<Reservation[]>([])
@@ -113,19 +111,19 @@ export default {
     }
 
     onMounted(async () => {
-      if (token.value) {
-        const valid = await checkToken(token.value)
+      if (auth.value) {
+        const valid = await checkToken(auth.value)
         if (valid) {
-          reservations.value = await getReservations(token.value)
+          reservations.value = await getReservations(auth.value)
         } else {
-          token.value = ''
+          auth.value = null
         }
       }
     })
 
-    watch(token, async (to) => {
-      if (to) {
-        reservations.value = await getReservations(token.value)
+    watch(auth, async (newAuth) => {
+      if (newAuth) {
+        reservations.value = await getReservations(newAuth)
       }
     })
 
@@ -144,6 +142,7 @@ export default {
       toggle,
       auth,
       setAuthentication,
+      reservations,
       userReservation,
       boatReservation,
       updateActiveReservations
