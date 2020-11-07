@@ -3,6 +3,7 @@ const qs = require('querystring')
 const crypto = require('crypto')
 
 const handler = async function (event) {
+
   try {
     const { body } = event
     const { username, password } = JSON.parse(body)
@@ -18,8 +19,8 @@ const handler = async function (event) {
       body: qs.stringify({
         username,
         password,
-        remember: 'on',
-        remember_device: 'on'
+        // remember: 'on',
+        // remember_device: 'on'
       })
     })
 

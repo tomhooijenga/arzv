@@ -9,6 +9,11 @@ export interface Reservation {
   person: string;
 }
 
+export interface OwnReservation extends Reservation {
+  id: string;
+  person: '';
+}
+
 export interface Auth {
   token: string;
 
@@ -53,6 +58,28 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
   }))
 }
 
+export async function getOwnReservations (auth: Auth): Promise<Array<OwnReservation>> {
+  const response = await fetch(root + 'own-reservations', {
+    method: 'POST',
+    headers: {
+      authorization: auth.token
+    },
+    body: JSON.stringify({
+      // eslint-disable-next-line
+      user_id: auth.id
+    })
+  })
+  const json = await response.json()
+
+  return json.reservations.map(({ id, boat, start, end, person }: { id: string; boat: string; start: string; end: string; person: string }) => ({
+    id,
+    start: new Date(start),
+    end: new Date(end),
+    boat: boats.find(({ name }) => name === boat),
+    person
+  }))
+}
+
 export async function checkReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
   const response = await fetch(root + 'check-reservation', {
     method: 'POST',
@@ -69,7 +96,7 @@ export async function checkReservation (auth: Auth, boats: Boat[], reservation: 
 }
 
 export async function createReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
-  const response = await fetch(root + 'check-reservation', {
+  const response = await fetch(root + 'create-reservation', {
     method: 'POST',
     headers: {
       authorization: auth.token
@@ -77,6 +104,22 @@ export async function createReservation (auth: Auth, boats: Boat[], reservation:
     body: JSON.stringify({
       ...reservation,
       boats: boats.map(({ id }) => id),
+      // eslint-disable-next-line
+      user_id: auth.id
+    })
+  })
+  const { success } = await response.json()
+  return success
+}
+
+export async function deleteReservation (auth: Auth, reservation: OwnReservation): Promise<boolean> {
+  const response = await fetch(root + 'delete-reservation', {
+    method: 'POST',
+    headers: {
+      authorization: auth.token
+    },
+    body: JSON.stringify({
+      id: reservation.id,
       // eslint-disable-next-line
       user_id: auth.id
     })

@@ -3,7 +3,10 @@
     <filterses @filter="updateList" :filters="filters"></filterses>
   </div>
   <login v-if="!auth" @authenticate="setAuthentication"></login>
-  <date v-else @reservation="updateActiveReservations" />
+  <date v-else
+        @reservation="updateActiveReservations"
+        :auth="auth"
+        :reservations="reservations"/>
 
   <div class="uk-container">
     <boat-list>
@@ -20,7 +23,8 @@
            :reservation="userReservation"
            :auth="auth"
            v-if="auth"
-           @unselect="boat => selected.delete(boat)"/>
+           @unselect="boat => selected.delete(boat)"
+           @reserve="onReserve"/>
 </template>
 
 <script lang="ts">
@@ -28,7 +32,7 @@ import 'uikit/dist/css/uikit.css'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { Boat, boats as boatsList } from './boats'
 import { filter } from '@/filter'
-import { Auth, checkToken, getReservations, Reservation } from '@/arzv'
+import { Auth, checkToken, getOwnReservations, getReservations, Reservation } from '@/arzv'
 import useLocalStorage from '@/use-local-storage'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
@@ -76,7 +80,7 @@ export default {
       }
     }
 
-    const auth = useLocalStorage<Auth | null>('auth')
+    const auth = useLocalStorage<Auth>('auth')
     function setAuthentication (newAuth: { token: string; id: string }) {
       auth.value = newAuth
     }
@@ -116,7 +120,7 @@ export default {
         if (valid) {
           reservations.value = await getReservations(auth.value)
         } else {
-          auth.value = null
+          // auth.value = null
         }
       }
     })
@@ -127,11 +131,17 @@ export default {
       }
     })
 
+    async function onReserve () {
+      selected.clear()
+      reservations.value = await getReservations(auth.value)
+      updateActiveReservations(userReservation.value!)
+    }
+
     // v todo: check token
     // v todo: show active reservation
-    // todo: cancel reservation
+    // v todo: cancel reservation
     // todo: name & instruction filter
-    // todo: add reservation
+    // v todo: add reservation
     // todo: dynamic boats
 
     return {
@@ -145,7 +155,8 @@ export default {
       reservations,
       userReservation,
       boatReservation,
-      updateActiveReservations
+      updateActiveReservations,
+      onReserve
     }
   }
 }

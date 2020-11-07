@@ -14,40 +14,76 @@
         </label>
       </div>
 
-      <div class="uk-margin-small">
-        <label class="uk-form-label">van</label>
-        <select v-model="state.start"
-                class="uk-select">
-          <option v-for="time in starts"
-                  :key="time">
-            {{ time }}
-          </option>
-        </select>
-      </div>
+      <div class="uk-flex uk-margin-small">
+        <div class="uk-width-1-2">
+          <label class="uk-form-label">van</label>
+          <select v-model="state.start"
+                  class="uk-select">
+            <option v-for="time in starts"
+                    :key="time">
+              {{ time }}
+            </option>
+          </select>
+        </div>
 
-      <div>
-        <label class="uk-form-label">tot</label>
-        <select v-model="state.end"
-                class="uk-select">
-          <option v-for="time in ends"
-                  :key="time">
-            {{ time }}
-          </option>
-        </select>
+        <div class=" uk-width-1-2">
+          <label class="uk-form-label">tot</label>
+          <select v-model="state.end"
+                  class="uk-select">
+            <option v-for="time in ends"
+                    :key="time">
+              {{ time }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <hr/>
+      <div class="uk-flex uk-margin">
+        <button class="uk-button uk-button-link uk-margin-auto"
+                type="button"
+                @click="state.showReservations = true">
+          Bekijk {{ reservations.length }} reserveringen
+        </button>
       </div>
     </div>
   </div>
+
+  <bottom-sheet :full="state.showReservations"
+                :show="state.showReservations"
+                @close="state.showReservations = false">
+    <template v-slot:title>
+      Reserveringen
+    </template>
+    <template v-if="state.showReservations" v-slot>
+      <reservations-list :auth="auth"
+                         :reservations="reservations">
+      </reservations-list>
+    </template>
+  </bottom-sheet>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, watch } from 'vue'
+import { computed, defineComponent, PropType, reactive, watch } from 'vue'
 import { addDays, format, getHours, getMinutes } from 'date-fns'
+import { Reservation } from '@/arzv'
+import bottomSheet from '@/components/BottomSheet.vue'
+import reservationsList from '@/components/ReservationsList.vue'
 
 const dateFormat = 'yyyy-MM-dd'
 
 export default defineComponent({
 
   emits: ['reservation'],
+
+  props: {
+    auth: Object,
+    reservations: Object as PropType<Reservation[]>
+  },
+
+  components: {
+    bottomSheet,
+    reservationsList
+  },
 
   setup (_, { emit }) {
     const now = new Date()
@@ -56,7 +92,8 @@ export default defineComponent({
       start: '08:00',
       end: '08:30',
       today: format(now, dateFormat),
-      tomorrow: format(addDays(now, 1), dateFormat)
+      tomorrow: format(addDays(now, 1), dateFormat),
+      showReservations: false
     })
 
     state.day = state.tomorrow

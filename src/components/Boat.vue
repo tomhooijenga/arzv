@@ -1,9 +1,13 @@
 <template>
   <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': !boat.id}">
     <div class="uk-card-header">
-      <h3 class="uk-card-title" :class="{'uk-text-muted': !boat.id}">
-        <input type="checkbox" :checked="selected" />
-        {{ boat.name }}
+      <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': !boat.id}">
+        <span class="uk-width-1-1 uk-text-truncate">{{ boat.name }}</span>
+        <span class="close"
+              v-if="removable"
+              @click="$emit('remove')">
+          🗙
+        </span>
       </h3>
     </div>
     <div class=" uk-card-body">
@@ -40,8 +44,12 @@ export default defineComponent({
   props: {
     boat: Object,
     selected: Boolean,
-    reservation: Object
+    reservation: Object,
+    removable: Boolean
   },
+
+  emits: ['remove'],
+
   methods: {
     enabled (permission) {
       return !permission.includes('-')
@@ -65,7 +73,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .uk-card {
-  margin: 0.5rem;
   border: 1px solid transparent;
   transition: border .2s ease-in-out;
 }
@@ -74,8 +81,7 @@ export default defineComponent({
   border-color: #32d296;
 }
 
-.uk-card-title {
-  white-space: nowrap;
-  overflow: auto;
+.close {
+  text-shadow: 0 1px 0 #fff;
 }
 </style>

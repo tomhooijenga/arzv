@@ -1,39 +1,39 @@
 <template>
-  <section :class="{show: boats.length > 0, full: state.full}"
-           class="drawer">
-    <div :class="{'uk-background-primary': state.full, 'uk-light': state.full, 'uk-text-bold': state.full}"
-         class="header">
-      <div class="uk-container"
-           @click="state.full = !state.full">
-        <div class="uk-padding-small uk-padding-remove-horizontal">
-          {{ title }}
-        </div>
+  <bottom-sheet :show="boats.length > 0"
+                :full="state.full"
+                @open="state.full = true"
+                @close="state.full = false">
+    <template v-slot:title>
+      {{ title }}
+    </template>
+
+    <template v-slot>
+      <div class="uk-container">
+        <boat-list>
+          <boat v-for="boat in boats"
+                :key="boat.name"
+                :boat="boat"
+                :selected="true"
+                :removable="true"
+                @remove="unselectBoat(boat)"/>
+        </boat-list>
+
+        <button :disabled="!state.valid"
+                class="uk-button uk-button-primary uk-display-block uk-margin-top uk-margin-bottom uk-margin-auto"
+                type="button"
+                @click="create">
+          {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
+        </button>
       </div>
-    </div>
-
-    <div class="uk-container">
-      <boat-list>
-        <boat v-for="boat in boats"
-              :key="boat.name"
-              :boat="boat"
-              :selected="true"
-              @click="unselectBoat(boat)"/>
-      </boat-list>
-
-      <button :disabled="!state.valid"
-              class="uk-button uk-button-primary uk-display-block uk-margin-small uk-margin-auto"
-              type="button"
-              @click="create">
-        {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
-      </button>
-    </div>
-  </section>
+    </template>
+  </bottom-sheet>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, watch, computed } from 'vue'
 import { Auth, checkReservation, createReservation, Reservation } from '@/arzv'
 import { Boat } from '@/boats'
+import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 
@@ -50,7 +50,10 @@ export default defineComponent({
     reservation: Object as PropType<Reservation>
   },
 
+  emits: ['unselect', 'reserve'],
+
   components: {
+    bottomSheet,
     boat,
     boatList
   },
@@ -97,6 +100,7 @@ export default defineComponent({
     async function create () {
       if (props.reservation) {
         await createReservation(props.auth, props.boats, props.reservation)
+        emit('reserve')
       }
     }
 
@@ -111,7 +115,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.drawer {
+.bottom-sheet {
   position: fixed;
   width: 100%;
   background: white;
