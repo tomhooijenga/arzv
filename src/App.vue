@@ -32,7 +32,7 @@ import 'uikit/dist/css/uikit.css'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { Boat, boats as boatsList } from './boats'
 import { filter } from '@/filter'
-import { Auth, checkToken, getOwnReservations, getReservations, Reservation } from '@/arzv'
+import { Auth, checkToken, getReservations, Reservation } from '@/arzv'
 import useLocalStorage from '@/use-local-storage'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
@@ -53,7 +53,7 @@ export default {
   },
   setup () {
     const initialFilters = useLocalStorage('filters')
-    const filters = reactive<{ }>(initialFilters.value)
+    const filters = reactive<{ }>(initialFilters.value || {})
     const boats = ref<Boat[]>(boatsList)
 
     function updateList (newFilters: { }) {
@@ -65,7 +65,10 @@ export default {
       initialFilters.value = {
         type: null,
         use: null,
-        weight: null
+        minWeight: null,
+        maxWeight: null,
+        instruction: null,
+        name: ''
       }
     } else {
       updateList(initialFilters.value)
@@ -140,7 +143,7 @@ export default {
     // v todo: check token
     // v todo: show active reservation
     // v todo: cancel reservation
-    // todo: name & instruction filter
+    // v todo: name & instruction filter
     // v todo: add reservation
     // todo: dynamic boats
 

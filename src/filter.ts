@@ -1,3 +1,4 @@
+import search from 'fuzzysearch'
 import { Boat } from '@/boats'
 
 type value = string | number;
@@ -15,16 +16,22 @@ const filterFns: {
 
   type: filterByValue('type'),
   use: filterByValue('use'),
-
-  weight (list, value) {
+  instruction (list, value) {
+    return list
+  },
+  name (list, value) {
+    return list.filter(({ name }) => {
+      return search(String(value).toLowerCase(), name.toLowerCase())
+    })
+  },
+  minWeight (list, value) {
     return list.filter(({ weight }) => {
-      if (weight === null) {
-        return true
-      }
-
-      value = parseInt(value as string, 10)
-
-      return value - 5 <= weight && weight <= value + 5
+      return weight === null || weight >= value
+    })
+  },
+  maxWeight (list, value) {
+    return list.filter(({ weight }) => {
+      return weight === null || weight <= value
     })
   }
 }
@@ -33,7 +40,7 @@ export function filter (boats: Boat[], filters: { [key: string]: value }): Boat[
   return Object
     .entries(filters)
     .reduce((filtered, [name, value]) => {
-      if (value === null) {
+      if (value === null || value === '' || !filterFns[name]) {
         return filtered
       }
       return filterFns[name](filtered, value)

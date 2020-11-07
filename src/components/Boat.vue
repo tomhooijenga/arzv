@@ -13,7 +13,7 @@
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">
         <span class="uk-text-bold">{{ boat.type }}</span>
-        <hr class="uk-divider-vertical uk-height-auto" />
+        <hr class="uk-divider-vertical uk-height-auto uk-border-pill" />
         <span :class="enabled(boat.scull) ? 'uk-text-primary' : ''">
           {{ boat.scull }}
         </span>
