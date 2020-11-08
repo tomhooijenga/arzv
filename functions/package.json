@@ -1,14 +1,16 @@
 {
-  "name": "authenticate",
+  "name": "functions",
   "version": "1.0.0",
   "description": "",
-  "main": "authenticate.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "date-fns": "^2.16.1",
     "node-fetch": "^2.6.1"
   }
 }
