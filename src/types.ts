@@ -10,6 +10,11 @@ export interface OwnReservation extends Reservation {
   person: '';
 }
 
+export interface ReservationDate {
+  start: Date;
+  end: Date;
+}
+
 export interface Auth {
   id: string;
   token: string;

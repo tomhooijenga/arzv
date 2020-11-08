@@ -24,8 +24,8 @@
                 @click="create">
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
         </button>
-        <p class="uk-text-center uk-text-meta" v-if="reservation">
-          {{ format('eeee d MMMM', reservation.start) }} van {{ format('HH:mm', reservation.start) }} tot {{ format('HH:mm', reservation.end) }}
+        <p class="uk-text-center uk-text-meta" v-if="reservationDate">
+          {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot {{ format('HH:mm', reservationDate.end) }}
         </p>
       </div>
     </template>
@@ -34,25 +34,22 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, watch, computed } from 'vue'
-import { checkReservation, createReservation } from '@/arzv'
+import { checkReservation } from '@/arzv'
 import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
-import { Auth, Boat, Reservation } from '@/types'
+import { Boat } from '@/types'
+import { useAuth } from '@/effects/use-auth'
+import { useReservations } from '@/effects/use-reservations'
 
 export default defineComponent({
   props: {
     boats: {
       type: Array as PropType<Boat[]>,
       required: true
-    },
-    auth: {
-      type: Object as PropType<Auth>,
-      required: true
-    },
-    reservation: Object as PropType<Reservation>
+    }
   },
 
   emits: ['unselect', 'reserve'],
@@ -64,16 +61,19 @@ export default defineComponent({
   },
 
   setup (props, { emit }) {
+    const { auth } = useAuth()
+    const { reservationDate, makeReservation } = useReservations()
+
     const state = reactive({
       full: false,
       valid: true
     })
 
     watch(
-      [() => state.full, () => props.auth, () => props.boats, () => props.reservation],
+      [auth, reservationDate, () => state.full, () => props.boats.length],
       async () => {
-        if (state.full && props.auth && props.boats && props.reservation) {
-          state.valid = await checkReservation(props.auth, props.boats, props.reservation)
+        if (auth.value && reservationDate.value && state.full && props.boats.length) {
+          state.valid = await checkReservation(auth.value, props.boats, reservationDate.value)
         }
       }
     )
@@ -103,8 +103,8 @@ export default defineComponent({
     }
 
     async function create () {
-      if (props.reservation) {
-        await createReservation(props.auth, props.boats, props.reservation)
+      if (reservationDate.value) {
+        await makeReservation(auth.value, props.boats, reservationDate.value)
         emit('reserve')
       }
     }
@@ -114,6 +114,7 @@ export default defineComponent({
       title,
       unselectBoat,
       create,
+      reservationDate,
       format: formatWithOptions({ locale: nl })
     }
   }

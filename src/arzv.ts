@@ -1,4 +1,4 @@
-import { Auth, Boat, Reservation, OwnReservation } from '@/types'
+import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/types'
 
 const root = '/.netlify/functions/'
 
@@ -40,7 +40,7 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
   }))
 }
 
-export async function getOwnReservations (auth: Auth): Promise<Array<OwnReservation>> {
+export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]> {
   const response = await fetch(root + 'own-reservations', {
     method: 'POST',
     headers: {
@@ -77,7 +77,7 @@ export async function checkReservation (auth: Auth, boats: Boat[], reservation: 
   return boats.every(({ id }) => available[id!])
 }
 
-export async function createReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
+export async function createReservation (auth: Auth, boats: Boat[], reservation: ReservationDate): Promise<boolean> {
   const response = await fetch(root + 'create-reservation', {
     method: 'POST',
     headers: {

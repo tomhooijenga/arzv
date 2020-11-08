@@ -1,4 +1,4 @@
-import { ref, readonly, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Auth } from '@/types'
 
 const auth = ref()

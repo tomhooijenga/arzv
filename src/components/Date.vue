@@ -55,35 +55,30 @@
       Reserveringen
     </template>
     <template v-if="state.showReservations" v-slot>
-      <reservations-list :reservations="reservations">
-      </reservations-list>
+      <reservations-list></reservations-list>
     </template>
   </bottom-sheet>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, reactive, watch } from 'vue'
+import { computed, defineComponent, reactive, watch } from 'vue'
 import { addDays, format, getHours, getMinutes } from 'date-fns'
-import { Reservation } from '@/types'
 import bottomSheet from '@/components/BottomSheet.vue'
 import reservationsList from '@/components/ReservationsList.vue'
+import { useReservations } from '@/effects/use-reservations'
 
 const dateFormat = 'yyyy-MM-dd'
 
 export default defineComponent({
-
-  emits: ['reservation'],
-
-  props: {
-    reservations: Object as PropType<Reservation[]>
-  },
 
   components: {
     bottomSheet,
     reservationsList
   },
 
-  setup (_, { emit }) {
+  setup () {
+    const { setReservationDate, reservations } = useReservations()
+
     const now = new Date()
     const state = reactive({
       day: '',
@@ -135,12 +130,12 @@ export default defineComponent({
       state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
     })
 
-    emit('reservation', {
+    setReservationDate({
       start: new Date(`${state.day} ${state.start}`),
       end: new Date(`${state.day} ${state.end}`)
     })
     watch(state, () => {
-      emit('reservation', {
+      setReservationDate({
         start: new Date(`${state.day} ${state.start}`),
         end: new Date(`${state.day} ${state.end}`)
       })
@@ -149,7 +144,8 @@ export default defineComponent({
     return {
       state,
       starts,
-      ends
+      ends,
+      reservations
     }
   }
 })

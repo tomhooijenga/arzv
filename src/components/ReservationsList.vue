@@ -1,10 +1,10 @@
 <template>
   <div class="uk-container">
     <h1 class="uk-margin-top uk-margin">Jouw afschrijvingen</h1>
-    <p v-if="!Object.keys(ownReservations).length">
+    <p v-if="!Object.keys(ownGrouped).length">
       Je hebt geen actieve afschrijvingen.
     </p>
-    <template v-for="({date, items}) in ownReservations"
+    <template v-for="({date, items}) in ownGrouped"
               :key="date">
       <h3 class="uk-margin">{{ format('eeee d MMMM', date) }}</h3>
       <boat-list class="uk-margin-bottom">
@@ -19,7 +19,7 @@
   </div>
   <hr/>
   <h1 class="uk-container uk-margin-top uk-margin">Ook op het water</h1>
-  <template v-for="({date, items}) in grouped"
+  <template v-for="({date, items}) in allGrouped"
             :key="date">
     <h3 class="uk-container uk-margin">{{ format('eeee d MMMM', date) }}</h3>
     <section class="uk-container uk-overflow-auto">
@@ -36,29 +36,28 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import { format } from 'date-fns'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
-import { deleteReservation, getOwnReservations } from '@/arzv'
-import { OwnReservation, Reservation } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import { useBoats } from '@/effects/use-boats'
+import { useReservations } from '@/effects/use-reservations'
+import { OwnReservation } from '@/types'
 
 export default defineComponent({
-
-  props: ['reservations'],
 
   components: {
     boat,
     boatList
   },
 
-  setup (props) {
+  setup () {
     const { auth } = useAuth()
     const { boats } = useBoats()
+    const { reservations, ownReservations, loadOwnReservations, cancelReservation } = useReservations()
 
     function groupByStart<T extends { start: Date }> (list: Array<T>) {
       const groups: { [key: string]: { date: Date; items: T[] } } = {}
@@ -73,23 +72,17 @@ export default defineComponent({
       return groups
     }
 
-    const ownReservations = ref({})
-
-    async function refreshOwn () {
-      const own = await getOwnReservations(auth.value)
-
-      ownReservations.value = groupByStart(own)
-    }
-
-    onMounted(refreshOwn)
-
-    const grouped = computed(() => {
-      return groupByStart<Reservation>(props.reservations)
+    onMounted(() => {
+      if (auth.value) {
+        loadOwnReservations(auth.value)
+      }
     })
 
-    async function onCancel (reservation: OwnReservation) {
-      await deleteReservation(auth.value, reservation)
-      await refreshOwn()
+    const allGrouped = computed(() => groupByStart(reservations.value))
+    const ownGrouped = computed(() => groupByStart(ownReservations.value))
+
+    function onCancel (reservation: OwnReservation) {
+      cancelReservation(auth.value, reservation)
     }
 
     function findBoatByName (name: string) {
@@ -97,10 +90,10 @@ export default defineComponent({
     }
 
     return {
-      ownReservations,
-      grouped,
-      findBoatByName,
+      allGrouped,
+      ownGrouped,
       onCancel,
+      findBoatByName,
       format: formatWithOptions({ locale: nl })
     }
   }

@@ -25,7 +25,7 @@
         </span>
       </div>
       <div class="uk-flex uk-flex-between">
-        <span :class="useClass('text')">{{ boat.use }}</span>
+        <span :class="useClass()">{{ boat.use }}</span>
         <span v-if="boat.weight">{{ boat.weight}} kg</span>
         <span v-else>Geen</span>
       </div>
@@ -54,14 +54,14 @@ export default defineComponent({
     enabled (permission) {
       return !permission.includes('-')
     },
-    useClass (prop) {
+    useClass () {
       const { id, use } = this.boat
 
       return {
-        [`uk-${prop}-danger`]: !id,
-        [`uk-${prop}-success`]: use === 'Algemeen',
-        [`uk-${prop}-primary`]: use === 'Wedstrijd',
-        [`uk-${prop}-warning`]: use === 'Jeugd'
+        'uk-text-danger': !id,
+        'uk-text-success': use === 'Algemeen',
+        'uk-text-primary': use === 'Wedstrijd',
+        'uk-text-warning': use === 'Jeugd'
       }
     },
     formatTime (date) {

@@ -3,8 +3,7 @@
   <div class="uk-container">
     <filterses></filterses>
   </div>
-  <date @reservation="updateActiveReservations"
-        :reservations="reservations"/>
+  <date />
 
   <div class="uk-container">
     <boat-list>
@@ -12,34 +11,32 @@
             :key="boat.name"
             :boat="boat"
             :selected="selected.has(boat)"
-            :reservation="boatReservation(boat)"
+            :reservation="boatReservation(boat.name)"
             @click="boat.id && !boatReservation(boat) && toggle(boat)"/>
     </boat-list>
   </div>
 
   <reserve :boats="Array.from(selected)"
-           :reservation="userReservation"
-           :auth="auth"
-           v-if="auth"
            @unselect="boat => selected.delete(boat)"
-           @reserve="onReserve"/>
+           @reserve="selected.clear()"/>
 </template>
 
 <script lang="ts">
 import 'uikit/dist/css/uikit.css'
-import { onMounted, reactive, ref, watch, computed } from 'vue'
+import { onMounted, reactive, watch, computed } from 'vue'
 import { filter } from '@/filter'
-import { checkToken, getReservations } from '@/arzv'
+import { checkToken } from '@/arzv'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import date from '@/components/Date.vue'
 import filters from '@/components/Filters.vue'
 import login from '@/components/Login.vue'
 import reserve from '@/components/Reserve.vue'
-import { Auth, Boat, Reservation } from '@/types'
+import { Auth, Boat } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
+import { useReservations } from '@/effects/use-reservations'
 
 export default {
   components: {
@@ -55,16 +52,27 @@ export default {
     const { auth, setAuth } = useAuth()
     const { filters } = useFilters()
     const { boats, loadBoats } = useBoats()
+    const { reservations, reservationDate, loadReservations } = useReservations()
 
     watch(auth, (to: Auth) => {
       if (to) {
         loadBoats(to)
+        loadReservations(to)
       }
     })
 
-    onMounted(() => {
+    onMounted(async () => {
+      let valid = false
+
       if (auth.value) {
+        valid = await checkToken(auth.value)
+      }
+
+      if (!valid) {
+        setAuth(null)
+      } else {
         loadBoats(auth.value)
+        loadReservations(auth.value)
       }
     })
 
@@ -81,15 +89,14 @@ export default {
       }
     }
 
-    const reservations = ref<Reservation[]>([])
-    const reservedBoats = ref<Map<Boat, Reservation>>(new Map<Boat, Reservation>())
-    const userReservation = ref<null | { start: Date; end: Date }>(null)
+    const reservedBoats = computed(() => {
+      if (!reservationDate.value) {
+        return new Map()
+      }
 
-    function updateActiveReservations (newUserReservation: { start: Date; end: Date }) {
-      userReservation.value = newUserReservation
+      const { start: userStart, end: userEnd } = reservationDate.value
 
-      const { start: userStart, end: userEnd } = newUserReservation
-      reservedBoats.value = new Map(
+      return new Map(
         reservations
           .value
           .filter(({ start, end }) => {
@@ -100,37 +107,10 @@ export default {
           })
           .map((reservation) => [reservation.boat, reservation])
       )
-    }
+    })
 
-    function boatReservation (boat: Boat) {
-      if (userReservation.value === null) {
-        return null
-      }
-
+    function boatReservation (boat: string) {
       return reservedBoats.value.get(boat)
-    }
-
-    onMounted(async () => {
-      if (auth.value) {
-        const valid = await checkToken(auth.value)
-        if (valid) {
-          reservations.value = await getReservations(auth.value)
-        } else {
-          setAuth(null)
-        }
-      }
-    })
-
-    watch(auth, async (newAuth) => {
-      if (newAuth) {
-        reservations.value = await getReservations(newAuth)
-      }
-    })
-
-    async function onReserve () {
-      selected.clear()
-      reservations.value = await getReservations(auth.value!)
-      updateActiveReservations(userReservation.value!)
     }
 
     // v todo: check token
@@ -139,7 +119,7 @@ export default {
     // v todo: name & instruction filter
     // v todo: add reservation
     // v todo: dynamic boats
-    // todo: timezones fuckery
+    // v todo: timezones fuckery
     // todo: move to server
     // todo: mobile + bottom sheet
 
@@ -150,10 +130,7 @@ export default {
       toggle,
       auth,
       reservations,
-      userReservation,
-      boatReservation,
-      updateActiveReservations,
-      onReserve
+      boatReservation
     }
   }
 }
