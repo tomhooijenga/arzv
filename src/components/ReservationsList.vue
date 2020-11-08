@@ -1,12 +1,12 @@
 <template>
   <div class="uk-container">
-    <h1>Jouw afschrijvingen</h1>
+    <h1 class="uk-margin-top uk-margin">Jouw afschrijvingen</h1>
     <p v-if="!Object.keys(ownReservations).length">
       Je hebt geen actieve afschrijvingen.
     </p>
     <template v-for="({date, items}) in ownReservations"
               :key="date">
-      <h3>{{ format('eeee d MMMM', date) }}</h3>
+      <h3 class="uk-margin">{{ format('eeee d MMMM', date) }}</h3>
       <boat-list class="uk-margin-bottom">
         <boat v-for="reservation in items"
               :key="reservation.start"
@@ -18,10 +18,10 @@
     </template>
   </div>
   <hr/>
-  <h1 class="uk-container">Ook op het water</h1>
+  <h1 class="uk-container uk-margin-top uk-margin">Ook op het water</h1>
   <template v-for="({date, items}) in grouped"
             :key="date">
-    <h3 class="uk-container">{{ format('eeee d MMMM', date) }}</h3>
+    <h3 class="uk-container uk-margin">{{ format('eeee d MMMM', date) }}</h3>
     <section class="uk-container uk-overflow-auto">
       <table class="uk-table uk-table-divider uk-table-small uk-text-nowrap">
         <tr v-for="reservation in items"

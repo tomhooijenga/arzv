@@ -82,7 +82,7 @@ export default {
       }
     }
 
-    const auth = useLocalStorage<Auth>('auth')
+    const auth = useLocalStorage<Auth | null>('auth')
     function setAuthentication (newAuth: { token: string; id: string }) {
       auth.value = newAuth
     }
@@ -122,7 +122,7 @@ export default {
         if (valid) {
           reservations.value = await getReservations(auth.value)
         } else {
-          // auth.value = null
+          auth.value = null
         }
       }
     })
@@ -135,7 +135,7 @@ export default {
 
     async function onReserve () {
       selected.clear()
-      reservations.value = await getReservations(auth.value)
+      reservations.value = await getReservations(auth.value!)
       updateActiveReservations(userReservation.value!)
     }
 

@@ -24,6 +24,9 @@
                 @click="create">
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
         </button>
+        <p class="uk-text-center uk-text-meta">
+          {{ format('eeee d MMMM', reservation.start) }} van {{ format('HH:mm', reservation.start) }} tot {{ format('HH:mm', reservation.end) }}
+        </p>
       </div>
     </template>
   </bottom-sheet>
@@ -36,6 +39,8 @@ import { Boat } from '@/boats'
 import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
+import { formatWithOptions } from 'date-fns/fp'
+import nl from 'date-fns/locale/nl'
 
 export default defineComponent({
   props: {
@@ -108,7 +113,8 @@ export default defineComponent({
       state,
       title,
       unselectBoat,
-      create
+      create,
+      format: formatWithOptions({ locale: nl })
     }
   }
 })
