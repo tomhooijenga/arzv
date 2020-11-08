@@ -13,7 +13,7 @@
               @click="removeFilter(filter)"
       >
         {{ format(filter, value) }}
-        <span class="close">🗙</span>
+        <span class="close">&times;</span>
       </button>
 
     <button v-if="filters.minWeight && filters.maxWeight"
@@ -22,7 +22,7 @@
             @click="removeFilter('minWeight'); removeFilter('maxWeight')"
     >
       {{ filters.minWeight }} - {{filters.maxWeight}} kg
-      <span class="close">🗙</span>
+      <span class="close">&times;</span>
     </button>
   </div>
 

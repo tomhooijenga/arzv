@@ -8,7 +8,7 @@
         <div class="uk-padding-small uk-padding-remove-horizontal uk-text-truncate uk-width-1-1">
           <slot name="title"></slot> &nbsp;
         </div>
-        <span v-if="full" class="uk-margin-auto-vertical">🗙</span>
+        <span v-if="full" class="uk-margin-auto-vertical">&times;</span>
       </div>
     </div>
 

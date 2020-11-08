@@ -6,7 +6,7 @@
         <span class="close"
               v-if="removable"
               @click="$emit('remove')">
-          🗙
+          &times;
         </span>
       </h3>
     </div>
