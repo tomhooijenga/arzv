@@ -1,13 +1,14 @@
 <template>
   <section :class="{show: show, full: full}"
            class="bottom-sheet">
-    <div :class="{'uk-background-primary': full, 'uk-light': full, 'uk-text-bold': full}"
+    <div :class="{'uk-background-primary': full, 'uk-light': full, 'uk-box-shadow-small': full}"
          class="header">
-      <div class="uk-container"
+      <div class="uk-container uk-flex"
            @click="$emit(full ? 'close' : 'open')">
-        <div class="uk-padding-small uk-padding-remove-horizontal uk-text-truncate">
+        <div class="uk-padding-small uk-padding-remove-horizontal uk-text-truncate uk-width-1-1">
           <slot name="title"></slot> &nbsp;
         </div>
+        <span v-if="full" class="uk-margin-auto-vertical">🗙</span>
       </div>
     </div>
 
