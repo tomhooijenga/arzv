@@ -10,7 +10,7 @@
       <boat-list class="uk-margin-bottom">
         <boat v-for="reservation in items"
               :key="reservation.start"
-              :boat="reservation.boat"
+              :boat="findBoatByName(reservation.boat)"
               :removable="true"
               :reservation="reservation"
               @remove="onCancel(reservation)"/>
@@ -27,7 +27,7 @@
         <tr v-for="reservation in items"
             :key="reservation.start">
           <td>{{ format('p', reservation.start) }} - {{ format('p', reservation.end) }}</td>
-          <td class="uk-text-italic">{{ reservation.boat.name }}</td>
+          <td class="uk-text-italic">{{ reservation.boat }}</td>
           <td>{{ reservation.person }}</td>
         </tr>
       </table>
@@ -40,13 +40,16 @@ import { computed, defineComponent, onMounted, ref } from 'vue'
 import { format } from 'date-fns'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
-import { deleteReservation, getOwnReservations, OwnReservation } from '@/arzv'
+import { deleteReservation, getOwnReservations } from '@/arzv'
+import { OwnReservation, Reservation } from '@/types'
+import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
+import { useBoats } from '@/effects/use-boats'
 
 export default defineComponent({
 
-  props: ['auth', 'reservations'],
+  props: ['reservations'],
 
   components: {
     boat,
@@ -54,6 +57,9 @@ export default defineComponent({
   },
 
   setup (props) {
+    const { auth } = useAuth()
+    const { boats } = useBoats()
+
     function groupByStart<T extends { start: Date }> (list: Array<T>) {
       const groups: { [key: string]: { date: Date; items: T[] } } = {}
 
@@ -70,24 +76,30 @@ export default defineComponent({
     const ownReservations = ref({})
 
     async function refreshOwn () {
-      const own = await getOwnReservations(props.auth)
+      const own = await getOwnReservations(auth.value)
+
       ownReservations.value = groupByStart(own)
     }
 
     onMounted(refreshOwn)
 
     const grouped = computed(() => {
-      return groupByStart(props.reservations)
+      return groupByStart<Reservation>(props.reservations)
     })
 
     async function onCancel (reservation: OwnReservation) {
-      await deleteReservation(props.auth, reservation)
-      refreshOwn()
+      await deleteReservation(auth.value, reservation)
+      await refreshOwn()
+    }
+
+    function findBoatByName (name: string) {
+      return boats.value.find((boat) => boat.name === name)
     }
 
     return {
       ownReservations,
       grouped,
+      findBoatByName,
       onCancel,
       format: formatWithOptions({ locale: nl })
     }

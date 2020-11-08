@@ -1,24 +1,7 @@
-import { Boat, boats } from '@/boats'
+import { Auth, Boat, Reservation, OwnReservation } from '@/types'
 
 const root = '/.netlify/functions/'
-
-export interface Reservation {
-  boat: Boat;
-  start: Date;
-  end: Date;
-  person: string;
-}
-
-export interface OwnReservation extends Reservation {
-  id: string;
-  person: '';
-}
-
-export interface Auth {
-  token: string;
-
-  id: string;
-}
+const boats: Boat[] = []
 
 export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
   const response = await fetch(root + 'authenticate', {
@@ -53,7 +36,7 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
   return json.reservations.map(({ boat, start, end, person }: { boat: string; start: string; end: string; person: string }) => ({
     start: new Date(start),
     end: new Date(end),
-    boat: boats.find(({ name }) => name === boat),
+    boat,
     person
   }))
 }
@@ -75,7 +58,7 @@ export async function getOwnReservations (auth: Auth): Promise<Array<OwnReservat
     id,
     start: new Date(start),
     end: new Date(end),
-    boat: boats.find(({ name }) => name === boat),
+    boat,
     person
   }))
 }
@@ -126,4 +109,15 @@ export async function deleteReservation (auth: Auth, reservation: OwnReservation
   })
   const { success } = await response.json()
   return success
+}
+
+export async function getBoats (auth: Auth): Promise<Boat[]> {
+  const response = await fetch(root + 'boats', {
+    headers: {
+      authorization: auth.token
+    }
+  })
+  const { boats } = await response.json()
+
+  return boats
 }

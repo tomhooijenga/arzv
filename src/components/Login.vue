@@ -57,15 +57,14 @@
 import { defineComponent, reactive } from 'vue'
 import modal from '@/components/Modal.vue'
 import { authenticate } from '@/arzv'
+import { useAuth } from '@/effects/use-auth'
 
 export default defineComponent({
   components: {
     modal
   },
 
-  emits: ['authenticate'],
-
-  setup (_, { emit }) {
+  setup () {
     const state = reactive({
       username: '',
       password: '',
@@ -73,6 +72,8 @@ export default defineComponent({
       loading: false,
       showModal: false
     })
+
+    const { setAuth } = useAuth()
 
     async function login () {
       state.loading = true
@@ -82,7 +83,7 @@ export default defineComponent({
         if (result.success) {
           state.error = false
           state.showModal = false
-          emit('authenticate', { token: result.token, id: result.id })
+          setAuth({ token: result.token, id: result.id })
         } else {
           state.error = true
         }

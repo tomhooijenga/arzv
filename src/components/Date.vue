@@ -55,8 +55,7 @@
       Reserveringen
     </template>
     <template v-if="state.showReservations" v-slot>
-      <reservations-list :auth="auth"
-                         :reservations="reservations">
+      <reservations-list :reservations="reservations">
       </reservations-list>
     </template>
   </bottom-sheet>
@@ -65,7 +64,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, reactive, watch } from 'vue'
 import { addDays, format, getHours, getMinutes } from 'date-fns'
-import { Reservation } from '@/arzv'
+import { Reservation } from '@/types'
 import bottomSheet from '@/components/BottomSheet.vue'
 import reservationsList from '@/components/ReservationsList.vue'
 
@@ -76,7 +75,6 @@ export default defineComponent({
   emits: ['reservation'],
 
   props: {
-    auth: Object,
     reservations: Object as PropType<Reservation[]>
   },
 

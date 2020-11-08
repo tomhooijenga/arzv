@@ -1,16 +1,15 @@
 <template>
   <div class="uk-container">
-    <filterses @filter="updateList" :filters="filters"></filterses>
+    <filterses></filterses>
   </div>
-  <login v-if="!auth" @authenticate="setAuthentication"></login>
+  <login v-if="!auth"></login>
   <date v-else
         @reservation="updateActiveReservations"
-        :auth="auth"
         :reservations="reservations"/>
 
   <div class="uk-container">
     <boat-list>
-      <boat v-for="boat in boats"
+      <boat v-for="boat in activeBoats"
             :key="boat.name"
             :boat="boat"
             :selected="selected.has(boat)"
@@ -29,17 +28,19 @@
 
 <script lang="ts">
 import 'uikit/dist/css/uikit.css'
-import { onMounted, reactive, ref, watch } from 'vue'
-import { Boat, boats as boatsList } from './boats'
+import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { filter } from '@/filter'
-import { Auth, checkToken, getReservations, Reservation } from '@/arzv'
-import useLocalStorage from '@/use-local-storage'
+import { checkToken, getReservations } from '@/arzv'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import date from '@/components/Date.vue'
 import filters from '@/components/Filters.vue'
 import login from '@/components/Login.vue'
 import reserve from '@/components/Reserve.vue'
+import { Auth, Boat, Reservation } from '@/types'
+import { useAuth } from '@/effects/use-auth'
+import { useFilters } from '@/effects/use-filters'
+import { useBoats } from '@/effects/use-boats'
 
 export default {
   components: {
@@ -52,26 +53,25 @@ export default {
     reserve
   },
   setup () {
-    const initialFilters = useLocalStorage('filters')
-    const filters = reactive<{ }>(initialFilters.value || {})
-    const boats = ref<Boat[]>(boatsList)
+    const { auth, setAuth } = useAuth()
+    const { filters } = useFilters()
+    const { boats, loadBoats } = useBoats()
 
-    function updateList (newFilters: { }) {
-      Object.assign(filters, newFilters)
-      boats.value = filter(boatsList, newFilters)
-    }
-
-    if (!initialFilters.value) {
-      initialFilters.value = {
-        type: null,
-        use: null,
-        minWeight: null,
-        maxWeight: null,
-        instruction: null,
-        name: ''
+    watch(auth, (to: Auth) => {
+      if (to) {
+        loadBoats(to)
       }
-    }
-    updateList(initialFilters.value)
+    })
+
+    onMounted(() => {
+      if (auth.value) {
+        loadBoats(auth.value)
+      }
+    })
+
+    const activeBoats = computed(() => {
+      return filter(boats.value, filters)
+    })
 
     const selected = reactive<Set<Boat>>(new Set())
     function toggle (boat: Boat) {
@@ -80,11 +80,6 @@ export default {
       } else {
         selected.add(boat)
       }
-    }
-
-    const auth = useLocalStorage<Auth | null>('auth')
-    function setAuthentication (newAuth: { token: string; id: string }) {
-      auth.value = newAuth
     }
 
     const reservations = ref<Reservation[]>([])
@@ -122,7 +117,7 @@ export default {
         if (valid) {
           reservations.value = await getReservations(auth.value)
         } else {
-          auth.value = null
+          setAuth(null)
         }
       }
     })
@@ -144,16 +139,17 @@ export default {
     // v todo: cancel reservation
     // v todo: name & instruction filter
     // v todo: add reservation
-    // todo: dynamic boats
+    // v todo: dynamic boats
+    // todo: timezones fuckery
+    // todo: move to server
+    // todo: mobile + bottom sheet
 
     return {
       filters,
-      boats,
+      activeBoats,
       selected,
-      updateList,
       toggle,
       auth,
-      setAuthentication,
       reservations,
       userReservation,
       boatReservation,

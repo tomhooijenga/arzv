@@ -119,31 +119,24 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
-import { Boat, boats } from '@/boats'
+import { Boat } from '@/types'
 import modal from '@/components/Modal.vue'
-
-function pluck (prop: keyof Boat) {
-  return Array.from(new Set(boats.map(boat => boat[prop])))
-}
-
-const types = (pluck('type') as string[]).sort((a, b) => a.localeCompare(b))
-const uses = pluck('use')
+import { useFilters } from '@/effects/use-filters'
+import { useBoats } from '@/effects/use-boats'
 
 export default defineComponent({
-  props: ['filters'],
-
-  emits: ['filter'],
-
   components: {
     modal
   },
 
-  setup (props, { emit }) {
+  setup () {
     const showModal = ref<boolean>(false)
-    const newFilters = reactive({ ...props.filters })
+
+    const { filters, setFilters } = useFilters()
+    const newFilters = reactive({ ...filters as any })
     const activeFilters = computed(() => {
       return Object.fromEntries(
-        Object.entries(props.filters).filter(([filter, value]) => {
+        Object.entries(filters).filter(([filter, value]) => {
           if (filter === 'minWeight' || filter === 'maxWeight') {
             return false
           }
@@ -153,20 +146,20 @@ export default defineComponent({
     })
 
     watch(() => newFilters.minWeight, () => {
-      newFilters.maxWeight = Math.max(newFilters.minWeight, newFilters.maxWeight)
+      newFilters.maxWeight = Math.max(newFilters.minWeight || 0, newFilters.maxWeight || 0)
     })
 
     watch(() => newFilters.maxWeight, () => {
-      newFilters.minWeight = Math.min(newFilters.minWeight, newFilters.maxWeight)
+      newFilters.minWeight = Math.min(newFilters.minWeight || 0, newFilters.maxWeight || 0)
     })
 
     function removeFilter (filter: string) {
       newFilters[filter] = null
-      emit('filter', newFilters)
+      setFilters(newFilters)
     }
 
     function commitFilters () {
-      emit('filter', newFilters)
+      setFilters(newFilters)
       showModal.value = false
     }
 
@@ -184,10 +177,23 @@ export default defineComponent({
       return value
     }
 
+    const { boats } = useBoats()
+
+    function pluck (boats: Boat[], prop: keyof Boat) {
+      return Array.from(new Set(boats.map(boat => boat[prop])))
+    }
+
+    const types = computed(() => {
+      return (pluck(boats.value, 'type') as string[])
+        .sort((a, b) => a.localeCompare(b))
+    })
+    const uses = computed(() => pluck(boats.value, 'use'))
+
     return {
       uses,
       types,
       showModal,
+      filters,
       newFilters,
       activeFilters,
       format,

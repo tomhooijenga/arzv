@@ -34,13 +34,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, watch, computed } from 'vue'
-import { Auth, checkReservation, createReservation, Reservation } from '@/arzv'
-import { Boat } from '@/boats'
+import { checkReservation, createReservation } from '@/arzv'
 import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
+import { Auth, Boat, Reservation } from '@/types'
 
 export default defineComponent({
   props: {

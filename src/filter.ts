@@ -1,8 +1,8 @@
 import search from 'fuzzysearch'
-import { Boat } from '@/boats'
+import { Boat, Filters } from '@/types'
 
 type value = string | number;
-type filterFn = (list: Boat[], value: value) => Boat[]
+type filterFn = (list: Readonly<Boat[]>, value: value) => Readonly<Boat[]>
 
 function filterByValue (property: keyof Boat): filterFn {
   return function (list, value): Boat[] {
@@ -36,7 +36,7 @@ const filterFns: {
   }
 }
 
-export function filter (boats: Boat[], filters: { [key: string]: value }): Boat[] {
+export function filter (boats: Readonly<Boat[]>, filters: Filters): Readonly<Boat[]> {
   return Object
     .entries(filters)
     .reduce((filtered, [name, value]) => {
