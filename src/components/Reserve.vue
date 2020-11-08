@@ -24,7 +24,7 @@
                 @click="create">
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
         </button>
-        <p class="uk-text-center uk-text-meta">
+        <p class="uk-text-center uk-text-meta" v-if="reservation">
           {{ format('eeee d MMMM', reservation.start) }} van {{ format('HH:mm', reservation.start) }} tot {{ format('HH:mm', reservation.end) }}
         </p>
       </div>
