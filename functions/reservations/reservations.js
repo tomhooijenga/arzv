@@ -1,5 +1,6 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
+const { formatISO } = require('date-fns')
 
 const handler = async function (event) {
   try {
@@ -41,8 +42,8 @@ const handler = async function (event) {
         const person = item.find('i').text().trim().replace(/^\(|\)$/g, '')
 
         reservations.push({
-          start: new Date(`${date} ${from}:00`),
-          end: new Date(`${date} ${to}:00`),
+          start: formatISO(new Date(`${date} ${from}:00`)),
+          end: formatISO(new Date(`${date} ${to}:00`)),
           boat,
           person
         })

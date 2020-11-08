@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const qs = require('querystring')
 const cheerio = require('cheerio')
-const { parse } = require('date-fns')
+const { parse, formatISO } = require('date-fns')
 
 const handler = async function (event) {
   try {
@@ -41,8 +41,8 @@ const handler = async function (event) {
           id,
           boat,
           person: '',
-          start: parse(start, 'dd-MM-yyyy HH:mm', 0),
-          end: parse(end, 'dd-MM-yyyy HH:mm', 0)
+          start: formatISO(parse(start, 'dd-MM-yyyy HH:mm', 0)),
+          end: formatISO(parse(end, 'dd-MM-yyyy HH:mm', 0))
         }
       })
 
