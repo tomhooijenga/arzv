@@ -2,7 +2,7 @@ import search from 'fuzzysearch'
 import { Boat, Filters } from '@/types'
 
 type value = string | number;
-type filterFn = (list: Readonly<Boat[]>, value: value) => Readonly<Boat[]>
+type filterFn = (list: Boat[], value: value) => Boat[]
 
 function filterByValue (property: keyof Boat): filterFn {
   return function (list, value): Boat[] {
@@ -16,9 +16,7 @@ const filterFns: {
 
   type: filterByValue('type'),
   use: filterByValue('use'),
-  instruction (list, value) {
-    return list
-  },
+  instruction: filterByValue('instruction'),
   name (list, value) {
     return list.filter(({ name }) => {
       return search(String(value).toLowerCase(), name.toLowerCase())
@@ -36,7 +34,7 @@ const filterFns: {
   }
 }
 
-export function filter (boats: Readonly<Boat[]>, filters: Filters): Readonly<Boat[]> {
+export function filter (boats: Boat[], filters: Filters): Boat[] {
   return Object
     .entries(filters)
     .reduce((filtered, [name, value]) => {
