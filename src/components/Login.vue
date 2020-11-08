@@ -1,17 +1,7 @@
 <template>
-  <div class="uk-section uk-section-muted uk-margin-small">
-    <div class="uk-container uk-text-center">
-      <button class="uk-button uk-button-secondary uk-margin-small-bottom"
-              type="button"
-              @click="state.showModal = true">
-        Log in
-      </button>
-      <br/>
-      om reserveringen te kunnen zien en maken.
-    </div>
-  </div>
-  <modal :show="state.showModal"
-         @close="state.showModal = false">
+  <modal :show="show">
+    <img src="@/assets/logo.png" class="uk-display-block uk-margin uk-margin-auto" />
+
     <p v-if="state.error" class="uk-text-danger">Ongeldige gebruikersnaam of wachtwoord</p>
 
     <form class="uk-form-stacked"
@@ -40,9 +30,6 @@
 
       <div class="uk-flex uk-flex-nowrap">
         <button class="uk-button uk-button-primary" type="submit">Inloggen</button>
-        <button class="uk-button uk-button-default uk-margin-left" type="button" @click="state.showModal = false">
-          Annuleer
-        </button>
       </div>
     </form>
 
@@ -60,6 +47,10 @@ import { authenticate } from '@/arzv'
 import { useAuth } from '@/effects/use-auth'
 
 export default defineComponent({
+  props: {
+    show: Boolean
+  },
+
   components: {
     modal
   },
@@ -69,8 +60,7 @@ export default defineComponent({
       username: '',
       password: '',
       error: false,
-      loading: false,
-      showModal: false
+      loading: false
     })
 
     const { setAuth } = useAuth()
@@ -82,7 +72,6 @@ export default defineComponent({
 
         if (result.success) {
           state.error = false
-          state.showModal = false
           setAuth({ token: result.token, id: result.id })
         } else {
           state.error = true
@@ -101,6 +90,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+img {
+  height: 100px;
+}
+
 .uk-section {
   position: sticky;
   top: 0;

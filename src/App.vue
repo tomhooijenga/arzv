@@ -1,10 +1,9 @@
 <template>
+  <login :show="!auth"></login>
   <div class="uk-container">
     <filterses></filterses>
   </div>
-  <login v-if="!auth"></login>
-  <date v-else
-        @reservation="updateActiveReservations"
+  <date @reservation="updateActiveReservations"
         :reservations="reservations"/>
 
   <div class="uk-container">
