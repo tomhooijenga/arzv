@@ -11,6 +11,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "date-fns": "^2.16.1",
+    "date-fns-tz": "^1.0.12",
     "node-fetch": "^2.6.1"
   }
 }

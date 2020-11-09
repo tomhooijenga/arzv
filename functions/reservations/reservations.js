@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
 const cheerio = require('cheerio')
-const { formatISO } = require('date-fns')
+const { parse } = require('date-fns')
+const { zonedTimeToUtc } = require('date-fns-tz')
 
 const handler = async function (event) {
   try {
@@ -33,8 +34,7 @@ const handler = async function (event) {
       const item = $(items[i])
 
       if (item.is('.booking_date_header')) {
-        const [d, m, y] = item.text().trim().split('-')
-        date = `${y}-${m}-${d}`
+        date = item.text().trim()
       } else {
         const match = item.text().match(/(\d+:\d+) - (\d+:\d+)/)
         const [, from, to] = match
@@ -42,8 +42,8 @@ const handler = async function (event) {
         const person = item.find('i').text().trim().replace(/^\(|\)$/g, '')
 
         reservations.push({
-          start: formatISO(new Date(`${date} ${from}:00`)),
-          end: formatISO(new Date(`${date} ${to}:00`)),
+          start: zonedTimeToUtc(parse(`${date} ${from}`, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam'),
+          end: zonedTimeToUtc(parse(`${date} ${to}`, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam'),
           boat,
           person
         })

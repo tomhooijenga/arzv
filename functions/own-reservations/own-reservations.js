@@ -1,7 +1,8 @@
 const fetch = require('node-fetch')
 const qs = require('querystring')
 const cheerio = require('cheerio')
-const { parse, formatISO } = require('date-fns')
+const { parse } = require('date-fns')
+const { zonedTimeToUtc } = require('date-fns-tz')
 
 const handler = async function (event) {
   try {
@@ -41,8 +42,8 @@ const handler = async function (event) {
           id,
           boat,
           person: '',
-          start: formatISO(parse(start, 'dd-MM-yyyy HH:mm', 0)),
-          end: formatISO(parse(end, 'dd-MM-yyyy HH:mm', 0))
+          start: zonedTimeToUtc(parse(start, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam'),
+          end: zonedTimeToUtc(parse(end, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam')
         }
       })
 
