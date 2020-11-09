@@ -1,45 +1,51 @@
 const fetch = require('node-fetch')
 const qs = require('querystring')
-const crypto = require('crypto')
+const setCookieParser = require('set-cookie-parser')
 
 const handler = async function (event) {
-
   try {
     const { body } = event
     const { username, password } = JSON.parse(body)
 
     // Create own session id the one received from server does not always work
-    const token = crypto.randomBytes(13).toString('hex')
     const response = await fetch('https://roei.arzv.nl/login.php', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Cookie: `PHPSESSID=${token}`
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: qs.stringify({
         username,
         password,
-        // remember: 'on',
-        // remember_device: 'on'
-      })
+        remember: 'on'
+      }),
+      redirect: 'manual'
     })
 
-    if (response.url.endsWith('home.php')) {
+    // Unsuccessful is 200, stays on login. Successful is 307, goes to index
+    if (response.status === 200) {
       return {
-        statusCode: 200,
+        statusCode: 403,
         body: JSON.stringify({
-          success: true,
-          id: username,
-          token
+          success: false,
+          error: 'Invalid username or password'
         })
       }
     }
 
+    const cookiesHeader = response.headers.raw()['set-cookie']
+    const cookies = setCookieParser(cookiesHeader, {
+      map: true
+    })
+    const token = ['PHPSESSID', 'roei-cookid', 'roei-cookname'].map((name) => {
+      return `${name}=${encodeURIComponent(cookies[name].value)}`
+    }).join('; ')
+
     return {
-      statusCode: 403,
+      statusCode: 200,
       body: JSON.stringify({
-        success: false,
-        error: 'Invalid username or password'
+        success: true,
+        id: username,
+        token
       })
     }
   } catch (error) {
