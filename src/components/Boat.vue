@@ -82,6 +82,6 @@ export default defineComponent({
 }
 
 .close {
-  text-shadow: 0 1px 0 #fff;
+  cursor: pointer;
 }
 </style>

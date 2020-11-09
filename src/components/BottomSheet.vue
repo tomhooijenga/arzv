@@ -32,12 +32,11 @@ export default defineComponent({
   position: fixed;
   z-index: 1;
   width: 100%;
+  bottom: 0;
   background: white;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-  bottom: 0;
   transform: translateY(100%);
   transition: transform .2s ease-in-out, height .2s ease-in-out;
-  height: 54px;
   overscroll-behavior: none;
 }
 
@@ -46,7 +45,7 @@ export default defineComponent({
 }
 
 .full {
-  height: 100vh;
+  height: 100%;
   overflow-y: auto;
 }
 
@@ -54,5 +53,6 @@ export default defineComponent({
   position: sticky;
   top: 0;
   z-index: 1;
+  cursor: pointer;
 }
 </style>

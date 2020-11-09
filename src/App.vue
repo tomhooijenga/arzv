@@ -113,16 +113,6 @@ export default {
       return reservedBoats.value.get(boat)
     }
 
-    // v todo: check token
-    // v todo: show active reservation
-    // v todo: cancel reservation
-    // v todo: name & instruction filter
-    // v todo: add reservation
-    // v todo: dynamic boats
-    // v todo: timezones fuckery
-    // todo: move to server
-    // todo: mobile + bottom sheet
-
     return {
       filters,
       activeBoats,
