@@ -16,7 +16,8 @@ const handler = async function (event) {
       body: qs.stringify({
         username,
         password,
-        remember: 'on'
+        remember: 'on',
+        remember_device: 'on'
       }),
       redirect: 'manual'
     })
