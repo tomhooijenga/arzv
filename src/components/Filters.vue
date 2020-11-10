@@ -110,7 +110,6 @@
           Nee
         </label>
       </div>
-
     </div>
     <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
     <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
@@ -119,10 +118,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
-import { Boat } from '@/types'
 import modal from '@/components/Modal.vue'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
+import { isEmpty } from '@/filter'
+import { Filters } from '@/types'
 
 export default defineComponent({
   components: {
@@ -133,14 +133,14 @@ export default defineComponent({
     const showModal = ref<boolean>(false)
 
     const { filters, setFilters } = useFilters()
-    const newFilters = reactive({ ...filters as any })
+    const newFilters = reactive({ ...filters })
     const activeFilters = computed(() => {
       return Object.fromEntries(
         Object.entries(filters).filter(([filter, value]) => {
           if (filter === 'minWeight' || filter === 'maxWeight') {
             return false
           }
-          return value !== null && value !== ''
+          return !isEmpty(value)
         })
       )
     })
@@ -153,7 +153,7 @@ export default defineComponent({
       newFilters.minWeight = Math.min(newFilters.minWeight || 0, newFilters.maxWeight || 0)
     })
 
-    function removeFilter (filter: string) {
+    function removeFilter (filter: keyof Filters) {
       newFilters[filter] = null
       setFilters(newFilters)
     }
@@ -179,12 +179,12 @@ export default defineComponent({
 
     const { boats } = useBoats()
 
-    function pluck (boats: Boat[], prop: keyof Boat) {
-      return Array.from(new Set(boats.map(boat => boat[prop])))
+    function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
+      return Array.from(new Set(items.map((item) => item[prop])))
     }
 
     const types = computed(() => {
-      return (pluck(boats.value, 'type') as string[])
+      return (pluck(boats.value, 'type'))
         .sort((a, b) => a.localeCompare(b))
     })
     const uses = computed(() => pluck(boats.value, 'use'))

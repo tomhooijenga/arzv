@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue'
 import { Filters } from '@/types'
 
-const filters = reactive({
+const filters = reactive<Filters>({
   type: null,
   use: null,
   minWeight: null,

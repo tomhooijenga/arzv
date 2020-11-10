@@ -44,6 +44,7 @@ import { useAuth } from '@/effects/use-auth'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
+import { areIntervalsOverlapping } from 'date-fns'
 
 export default {
   components: {
@@ -103,17 +104,10 @@ export default {
         return new Map()
       }
 
-      const { start: userStart, end: userEnd } = reservationDate.value
-
       return new Map(
         reservations
           .value
-          .filter(({ start, end }) => {
-            if (start >= userStart && start <= userEnd) {
-              return true
-            }
-            return end >= userStart && end <= userEnd
-          })
+          .filter((reservation) => areIntervalsOverlapping(reservation, reservationDate.value!))
           .map((reservation) => [reservation.boat, reservation])
       )
     })
