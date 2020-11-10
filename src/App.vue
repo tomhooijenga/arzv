@@ -29,7 +29,6 @@
 </template>
 
 <script lang="ts">
-import 'uikit/dist/css/uikit.css'
 import { computed, onMounted, reactive, watch } from 'vue'
 import { filter } from '@/filter'
 import { checkToken } from '@/arzv'
@@ -140,7 +139,37 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "~uikit/src/scss/variables-theme";
+@import "~uikit/src/scss/mixins-theme";
+
+@import "~uikit/src/scss/theme/_import";
+@import "~uikit/src/scss/components/variables";
+@import "~uikit/src/scss/components/mixin";
+@import "~uikit/src/scss/components/base";
+
+@import "~uikit/src/scss/components/background";
+@import "~uikit/src/scss/components/button";
+@import "~uikit/src/scss/components/card";
+@import "~uikit/src/scss/components/container";
+@import "~uikit/src/scss/components/divider";
+@import "~uikit/src/scss/components/form-range";
+@import "~uikit/src/scss/components/form"; // After form-range
+@import "~uikit/src/scss/components/inverse";
+@import "~uikit/src/scss/components/margin";
+@import "~uikit/src/scss/components/modal";
+@import "~uikit/src/scss/components/overlay";
+@import "~uikit/src/scss/components/padding";
+@import "~uikit/src/scss/components/cover";
+@import "~uikit/src/scss/components/position";
+@import "~uikit/src/scss/components/section";
+@import "~uikit/src/scss/components/table";
+@import "~uikit/src/scss/components/text";
+@import "~uikit/src/scss/components/utility";
+@import "~uikit/src/scss/components/flex"; // After utility
+@import "~uikit/src/scss/components/visibility";
+@import "~uikit/src/scss/components/width";
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .2s

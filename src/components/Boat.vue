@@ -13,7 +13,7 @@
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">
         <span class="uk-text-bold">{{ boat.type }}</span>
-        <hr class="uk-divider-vertical uk-height-auto uk-border-pill" />
+        <hr class="uk-divider-vertical" />
         <span :class="enabled(boat.scull) ? 'uk-text-primary' : ''">
           {{ boat.scull }}
         </span>
@@ -76,6 +76,11 @@ export default defineComponent({
 .uk-card {
   border: 1px solid transparent;
   transition: border .2s ease-in-out;
+}
+
+.uk-divider-vertical {
+  margin: 0 20px;
+  height: auto;
 }
 
 .selected {

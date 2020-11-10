@@ -230,7 +230,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .uk-divider-vertical {
   margin: 0 20px;
   height: auto;
