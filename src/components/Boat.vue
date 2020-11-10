@@ -1,7 +1,7 @@
 <template>
-  <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': !boat.id || reservation}">
+  <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': disabled}">
     <div class="uk-card-header">
-      <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': !boat.id || reservation}">
+      <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': disabled}">
         <span class="uk-width-1-1 uk-text-truncate">{{ boat.name }}</span>
         <span class="close"
               v-if="removable"
@@ -44,6 +44,7 @@ export default defineComponent({
   props: {
     boat: Object,
     selected: Boolean,
+    disabled: Boolean,
     reservation: Object,
     removable: Boolean
   },
