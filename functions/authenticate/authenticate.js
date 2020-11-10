@@ -25,7 +25,7 @@ const handler = async function (event) {
     // Unsuccessful is 200, stays on login. Successful is 307, goes to index
     if (response.status === 200) {
       return {
-        statusCode: 403,
+        statusCode: 401,
         body: JSON.stringify({
           success: false,
           error: 'Invalid username or password'
