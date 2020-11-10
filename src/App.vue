@@ -148,8 +148,8 @@ export default {
 @import "~uikit/src/scss/components/mixin";
 @import "~uikit/src/scss/components/base";
 
-@import "~uikit/src/scss/components/background";
 @import "~uikit/src/scss/components/button";
+@import "~uikit/src/scss/components/background"; //After button
 @import "~uikit/src/scss/components/card";
 @import "~uikit/src/scss/components/container";
 @import "~uikit/src/scss/components/divider";
