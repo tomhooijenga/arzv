@@ -17,7 +17,7 @@
               :boat="boat"
               :reservation="boatReservation(boat.name)"
               :selected="selected.has(boat)"
-              :disabled="!boat.id || boatReservation(boat.name)"
+              :disabled="!boat.id || !!boatReservation(boat.name)"
               @click="boat.id && !boatReservation(boat.name) && toggle(boat)"/>
       </boat-list>
     </transition>
