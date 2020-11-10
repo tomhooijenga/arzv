@@ -8,7 +8,7 @@
     <hr class="uk-divider-vertical"/>
       <button v-for="(value, filter) in activeFilters"
               :key="filter"
-              class="uk-button uk-button-default uk-border-pill uk-margin-right"
+              class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
               type="button"
               @click="removeFilter(filter)"
       >
@@ -17,7 +17,7 @@
       </button>
 
     <button v-if="filters.minWeight && filters.maxWeight"
-            class="uk-button uk-button-default uk-border-pill uk-margin-right"
+            class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
             type="button"
             @click="removeFilter('minWeight'); removeFilter('maxWeight')"
     >
@@ -243,8 +243,8 @@ export default defineComponent({
 
   .close {
     font-size: 120%;
-    text-shadow: 0 1px 0 #fff;
     padding: 0 10px;
+    margin-top: -5px;
   }
 }
 
