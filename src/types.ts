@@ -39,4 +39,5 @@ export interface Filters {
   maxWeight: number | null;
   instruction: boolean | null;
   name: string | null;
+  reserved: boolean | null
 }

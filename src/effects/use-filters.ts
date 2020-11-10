@@ -7,7 +7,8 @@ const filters = reactive<Filters>({
   minWeight: null,
   maxWeight: null,
   instruction: null,
-  name: ''
+  name: '',
+  reserved: null
 })
 
 function setFilters (to: Filters) {

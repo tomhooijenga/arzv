@@ -85,10 +85,6 @@ export default {
       }
     })
 
-    const activeBoats = computed(() => {
-      return filter(boats.value, filters)
-    })
-
     const selected = reactive<Set<Boat>>(new Set())
 
     function toggle (boat: Boat) {
@@ -115,6 +111,19 @@ export default {
     function boatReservation (boat: string) {
       return reservedBoats.value.get(boat)
     }
+
+    const activeBoats = computed(() => {
+      let active = filter(boats.value, filters)
+
+      // reserved filter depends on the active reservations
+      if (filters.reserved !== null) {
+        active = active.filter((boat) => {
+          return reservedBoats.value.has(boat.name) === filters.reserved
+        })
+      }
+
+      return active
+    })
 
     return {
       filters,

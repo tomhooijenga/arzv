@@ -110,6 +110,32 @@
           Nee
         </label>
       </div>
+
+      <div class="uk-margin">
+        <span class="uk-form-label">Gereserveerde boten</span>
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.reserved"
+                 class="uk-radio"
+                 type="radio"
+                 :value="null"/>
+          Alle
+        </label>
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.reserved"
+                 class="uk-radio"
+                 type="radio"
+                 :value="true"/>
+          Ja
+        </label>
+
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.reserved"
+                 class="uk-radio"
+                 type="radio"
+                 :value="false"/>
+          Nee
+        </label>
+      </div>
     </div>
     <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
     <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
@@ -167,7 +193,8 @@ export default defineComponent({
       [key: string]: (value: string) => string;
     } = {
       name: value => `"${value}"`,
-      instruction: value => value ? 'Instructie' : 'Geen instructie'
+      instruction: value => value ? 'Instructie' : 'Geen instructie',
+      reserved: value => value ? 'Gereserveerd' : 'Niet gereserveerd'
     }
 
     function format (filter: string, value: string): string {
@@ -184,8 +211,7 @@ export default defineComponent({
     }
 
     const types = computed(() => {
-      return (pluck(boats.value, 'type'))
-        .sort((a, b) => a.localeCompare(b))
+      return pluck(boats.value, 'type').sort((a, b) => a.localeCompare(b))
     })
     const uses = computed(() => pluck(boats.value, 'use'))
 
