@@ -3,31 +3,38 @@
   <div class="uk-container">
     <filterses></filterses>
   </div>
-  <date />
+  <date/>
 
   <div class="uk-container">
-    <boat-list>
-      <boat v-for="boat in activeBoats"
-            :key="boat.name"
-            :boat="boat"
-            :selected="selected.has(boat)"
-            :reservation="boatReservation(boat.name)"
-            @click="boat.id && !boatReservation(boat) && toggle(boat)"/>
-    </boat-list>
+    <transition name="fade" mode="out-in">
+      <boat-list :key="activeBoats.length">
+        <template v-if="boats.length === 0">
+          <boat-placeholder v-for="n in 10"
+                            :key="n"/>
+        </template>
+        <boat v-for="boat in activeBoats"
+              :key="boat.name"
+              :boat="boat"
+              :reservation="boatReservation(boat.name)"
+              :selected="selected.has(boat)"
+              @click="boat.id && !boatReservation(boat.name) && toggle(boat)"/>
+      </boat-list>
+    </transition>
   </div>
 
   <reserve :boats="Array.from(selected)"
-           @unselect="boat => selected.delete(boat)"
-           @reserve="selected.clear()"/>
+           @reserve="selected.clear()"
+           @unselect="boat => selected.delete(boat)"/>
 </template>
 
 <script lang="ts">
 import 'uikit/dist/css/uikit.css'
-import { onMounted, reactive, watch, computed } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { filter } from '@/filter'
 import { checkToken } from '@/arzv'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
+import boatPlaceholder from '@/components/BoatPlaceholder.vue'
 import date from '@/components/Date.vue'
 import filters from '@/components/Filters.vue'
 import login from '@/components/Login.vue'
@@ -42,6 +49,7 @@ export default {
   components: {
     boat,
     boatList,
+    boatPlaceholder,
     date,
     // can't have shit in detroit
     filterses: filters,
@@ -81,6 +89,7 @@ export default {
     })
 
     const selected = reactive<Set<Boat>>(new Set())
+
     function toggle (boat: Boat) {
       if (selected.has(boat)) {
         selected.delete(boat)
@@ -115,6 +124,7 @@ export default {
 
     return {
       filters,
+      boats,
       activeBoats,
       selected,
       toggle,
@@ -125,3 +135,15 @@ export default {
   }
 }
 </script>
+
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .2s
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0
+}
+</style>
