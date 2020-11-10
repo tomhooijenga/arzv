@@ -1,10 +1,13 @@
 import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/types'
 
-const root = '/.netlify/functions/'
+const root = process.env.NODE_ENV === 'development' ? '/api-dev/' : '/api/'
 
 export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
-  const response = await fetch(root + 'authenticate', {
+  const response = await fetch(root + 'auth', {
     method: 'POST',
+    headers: {
+      'content-type': 'application/json'
+    },
     body: JSON.stringify({
       username,
       password
@@ -14,13 +17,12 @@ export async function authenticate (username: string, password: string): Promise
 }
 
 export async function checkToken (auth: Auth): Promise<boolean> {
-  const response = await fetch(root + 'check-token', {
+  const response = await fetch(root + 'auth/check', {
     headers: {
       authorization: auth.token
     }
   })
   const { valid } = await response.json()
-
   return valid
 }
 
@@ -30,9 +32,8 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
       authorization: auth.token
     }
   })
-  const json = await response.json()
-
-  return json.reservations.map(({ boat, start, end, person }: { boat: string; start: string; end: string; person: string }) => ({
+  const { reservations } = await response.json()
+  return reservations.map(({ boat, start, end, person }: { boat: string; start: string; end: string; person: string }) => ({
     start: new Date(start),
     end: new Date(end),
     boat,
@@ -41,19 +42,13 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
 }
 
 export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]> {
-  const response = await fetch(root + 'own-reservations', {
-    method: 'POST',
+  const response = await fetch(root + `reservations/${auth.id}`, {
     headers: {
       authorization: auth.token
-    },
-    body: JSON.stringify({
-      // eslint-disable-next-line
-      user_id: auth.id
-    })
+    }
   })
-  const json = await response.json()
-
-  return json.reservations.map(({ id, boat, start, end, person }: { id: string; boat: string; start: string; end: string; person: string }) => ({
+  const { reservations } = await response.json()
+  return reservations.map(({ id, boat, start, end, person }: { id: string; boat: string; start: string; end: string; person: string }) => ({
     id,
     start: new Date(start),
     end: new Date(end),
@@ -63,10 +58,11 @@ export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]>
 }
 
 export async function checkReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
-  const response = await fetch(root + 'check-reservation', {
+  const response = await fetch(root + 'reservations/check', {
     method: 'POST',
     headers: {
-      authorization: auth.token
+      authorization: auth.token,
+      'content-type': 'application/json'
     },
     body: JSON.stringify({
       ...reservation,
@@ -78,10 +74,11 @@ export async function checkReservation (auth: Auth, boats: Boat[], reservation: 
 }
 
 export async function createReservation (auth: Auth, boats: Boat[], reservation: ReservationDate): Promise<boolean> {
-  const response = await fetch(root + 'create-reservation', {
+  const response = await fetch(root + 'reservations', {
     method: 'POST',
     headers: {
-      authorization: auth.token
+      authorization: auth.token,
+      'content-type': 'application/json'
     },
     body: JSON.stringify({
       ...reservation,
@@ -95,10 +92,11 @@ export async function createReservation (auth: Auth, boats: Boat[], reservation:
 }
 
 export async function deleteReservation (auth: Auth, reservation: OwnReservation): Promise<boolean> {
-  const response = await fetch(root + 'delete-reservation', {
-    method: 'POST',
+  const response = await fetch(root + 'reservations', {
+    method: 'DELETE',
     headers: {
-      authorization: auth.token
+      authorization: auth.token,
+      'content-type': 'application/json'
     },
     body: JSON.stringify({
       id: reservation.id,
@@ -117,6 +115,5 @@ export async function getBoats (auth: Auth): Promise<Boat[]> {
     }
   })
   const { boats } = await response.json()
-
   return boats
 }
