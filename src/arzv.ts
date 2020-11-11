@@ -1,6 +1,6 @@
 import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/types'
 
-const root = '/api/'
+const root = '/.netlify/functions/'
 
 export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
   const response = await fetch(root + 'authenticate', {
