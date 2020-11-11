@@ -7,7 +7,7 @@ const { zonedTimeToUtc } = require('date-fns-tz')
 const handler = async function (event) {
   try {
     const { authorization } = event.headers
-    const body = JSON.parse(event.body)
+    const { user_id: userId } = event.queryStringParameters
 
     const response = await fetch('https://roei.arzv.nl/blocks/arzv_boot_afschrijven/list_bookings.php', {
       method: 'POST',
@@ -16,7 +16,7 @@ const handler = async function (event) {
         cookie: authorization
       },
       body: qs.stringify({
-        user_id: body.user_id
+        user_id: userId
       })
     })
 
