@@ -1,9 +1,9 @@
 import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/types'
 
-const root = process.env.NODE_ENV === 'development' ? '/api-dev/' : '/api/'
+const root = '/api/'
 
 export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
-  const response = await fetch(root + 'auth', {
+  const response = await fetch(root + 'authenticate', {
     method: 'POST',
     headers: {
       'content-type': 'application/json'
@@ -17,7 +17,7 @@ export async function authenticate (username: string, password: string): Promise
 }
 
 export async function checkToken (auth: Auth): Promise<boolean> {
-  const response = await fetch(root + 'auth/check', {
+  const response = await fetch(root + 'check-token', {
     headers: {
       authorization: auth.token
     }
@@ -42,7 +42,7 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
 }
 
 export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]> {
-  const response = await fetch(root + `reservations/${auth.id}`, {
+  const response = await fetch(root + `own-reservations?user_id=${auth.id}`, {
     headers: {
       authorization: auth.token
     }
@@ -58,7 +58,7 @@ export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]>
 }
 
 export async function checkReservation (auth: Auth, boats: Boat[], reservation: { start: Date; end: Date }): Promise<boolean> {
-  const response = await fetch(root + 'reservations/check', {
+  const response = await fetch(root + 'check-reservation', {
     method: 'POST',
     headers: {
       authorization: auth.token,
@@ -74,7 +74,7 @@ export async function checkReservation (auth: Auth, boats: Boat[], reservation: 
 }
 
 export async function createReservation (auth: Auth, boats: Boat[], reservation: ReservationDate): Promise<boolean> {
-  const response = await fetch(root + 'reservations', {
+  const response = await fetch(root + 'create-reservation', {
     method: 'POST',
     headers: {
       authorization: auth.token,
@@ -92,7 +92,7 @@ export async function createReservation (auth: Auth, boats: Boat[], reservation:
 }
 
 export async function deleteReservation (auth: Auth, reservation: OwnReservation): Promise<boolean> {
-  const response = await fetch(root + 'reservations', {
+  const response = await fetch(root + 'delete-reservation', {
     method: 'DELETE',
     headers: {
       authorization: auth.token,

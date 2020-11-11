@@ -1,16 +1,11 @@
 [build]
 publish = "dist/"
-command = "npm run build"
+command = "npm run build && cd functions && npm ci"
 functions = "functions"
 
 [[redirects]]
 from = "/api/*"
-to = "https://arzv.herokuapp.com/:splat"
-status = 200
-
-[[redirects]]
-from = "/api-dev/*"
-to = "http://localhost:3000/:splat"
+to = ".netlify/functions/:splat"
 status = 200
 
 [[redirects]]
