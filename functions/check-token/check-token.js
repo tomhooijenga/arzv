@@ -3,18 +3,17 @@ const fetch = require('node-fetch')
 const handler = async function (event) {
   try {
     const { authorization } = event.headers
-    const response = await fetch('https://roei.arzv.nl/login.php', {
+    const response = await fetch('https://roei.arzv.nl/blocks/arzv_boot_afschrijven/get_boot_lijst.php', {
       headers: {
         cookie: authorization
-      },
-      redirect: 'manual'
+      }
     })
+    const doc = await response.text()
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        // Unsuccessful is 200, stays on login. Successful is 302, goes to index
-        valid: response.status === 302
+        valid: doc.length > 0
       })
     }
   } catch (error) {
