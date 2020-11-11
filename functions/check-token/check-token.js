@@ -5,14 +5,16 @@ const handler = async function (event) {
     const { authorization } = event.headers
     const response = await fetch('https://roei.arzv.nl/login.php', {
       headers: {
-        cookie: `PHPSESSID=${authorization}`
-      }
+        cookie: authorization
+      },
+      redirect: 'manual'
     })
 
     return {
       statusCode: 200,
       body: JSON.stringify({
-        valid: response.url.endsWith('home.php')
+        // Unsuccessful is 200, stays on login. Successful is 302, goes to index
+        valid: response.status === 302
       })
     }
   } catch (error) {

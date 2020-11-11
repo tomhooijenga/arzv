@@ -22,7 +22,7 @@ const handler = async function (event) {
       redirect: 'manual'
     })
 
-    // Unsuccessful is 200, stays on login. Successful is 307, goes to index
+    // Unsuccessful is 200, stays on login. Successful is 302, goes to index
     if (response.status === 200) {
       return {
         statusCode: 401,

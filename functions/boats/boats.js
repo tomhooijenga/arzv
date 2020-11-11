@@ -7,7 +7,7 @@ const handler = async function (event) {
 
     const response = await fetch('https://roei.arzv.nl/boot_afschrijven.php', {
       headers: {
-        Cookie: `PHPSESSID=${authorization}`
+        cookie: authorization
       }
     })
 

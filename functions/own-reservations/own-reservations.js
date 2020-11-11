@@ -13,7 +13,7 @@ const handler = async function (event) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Cookie: `PHPSESSID=${authorization}`
+        cookie: authorization
       },
       body: qs.stringify({
         user_id: body.user_id
