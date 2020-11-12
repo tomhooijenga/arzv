@@ -8,7 +8,7 @@
     </template>
 
     <template v-slot>
-      <div class="uk-container">
+      <div class="uk-container uk-margin-bottom">
         <boat-list>
           <boat v-for="boat in boats"
                 :key="boat.name"
@@ -27,6 +27,12 @@
         <p class="uk-text-center uk-text-meta" v-if="reservationDate">
           {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot {{ format('HH:mm', reservationDate.end) }}
         </p>
+        <p class="uk-text-center uk-text-meta" v-if="hasCompetition">
+          Wedstrijdboten mogen alleen gebruikt worden met toestemming van de wedstrijdcommissie.
+        </p>
+        <p class="uk-text-center uk-text-meta" v-if="hasYouth">
+          Jeugdboten mogen alleen buiten de jeugd bloktijden gebruikt worden.
+        </p>
       </div>
     </template>
   </bottom-sheet>
@@ -40,7 +46,7 @@ import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
-import { Boat } from '@/types'
+import { Boat, BoatUse } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import { useReservations } from '@/effects/use-reservations'
 
@@ -93,6 +99,9 @@ export default defineComponent({
       return `${boats[0].name}, ${boats[1].name} en ${boats.length - 2} ${boats.length - 2 === 1 ? 'andere' : 'anderen'}`
     })
 
+    const hasCompetition = computed(() => props.boats.some(({ use }) => use === BoatUse.Competition))
+    const hasYouth = computed(() => props.boats.some(({ use }) => use === BoatUse.Youth))
+
     function unselectBoat (boat: Boat): void {
       emit('unselect', boat)
 
@@ -112,6 +121,8 @@ export default defineComponent({
     return {
       state,
       title,
+      hasCompetition,
+      hasYouth,
       unselectBoat,
       create,
       reservationDate,

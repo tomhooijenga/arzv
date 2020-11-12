@@ -39,6 +39,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { format } from 'date-fns'
+import { BoatUse } from '@/types'
 
 export default defineComponent({
   props: {
@@ -60,9 +61,9 @@ export default defineComponent({
 
       return {
         'uk-text-danger': !id,
-        'uk-text-success': use === 'Algemeen',
-        'uk-text-primary': use === 'Wedstrijd',
-        'uk-text-warning': use === 'Jeugd'
+        'uk-text-success': use === BoatUse.General,
+        'uk-text-primary': use === BoatUse.Competition,
+        'uk-text-warning': use === BoatUse.Youth
       }
     },
     formatTime (date) {

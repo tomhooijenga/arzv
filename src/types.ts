@@ -24,12 +24,19 @@ export interface Boat {
   id: string | null;
   name: string;
   type: string;
-  use: 'Algemeen' | 'Wedstrijd' | 'Jeugd' | 'Buiten gebruik';
+  use: BoatUse;
   weight: number | null;
   scull: string;
   sweep: string;
   steer: string;
   instruction: boolean;
+}
+
+export enum BoatUse {
+  General= 'Algemeen',
+  Competition = 'Wedstrijd',
+  Youth = 'Jeugd',
+  None = 'Buiten Gebruik'
 }
 
 export interface Filters {
