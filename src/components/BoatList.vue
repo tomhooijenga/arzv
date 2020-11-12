@@ -11,7 +11,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .boats {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, auto));
