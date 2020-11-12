@@ -22,7 +22,7 @@
                 class="uk-button uk-button-primary uk-display-block uk-margin-top uk-margin-bottom uk-margin-auto"
                 type="button"
                 @click="create">
-          {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} afschrijven
+          {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} reserveren
         </button>
         <p class="uk-text-center uk-text-meta" v-if="reservationDate">
           {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot {{ format('HH:mm', reservationDate.end) }}

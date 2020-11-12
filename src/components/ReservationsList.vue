@@ -1,8 +1,8 @@
 <template>
   <div class="uk-container">
-    <h1 class="uk-margin-top uk-margin">Jouw afschrijvingen</h1>
+    <h1 class="uk-margin-top uk-margin">Jouw reserveringen</h1>
     <p v-if="!Object.keys(ownGrouped).length">
-      Je hebt geen actieve afschrijvingen.
+      Je hebt geen actieve reserveringen.
     </p>
     <template v-for="({date, items}) in ownGrouped"
               :key="date">
