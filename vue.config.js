@@ -6,6 +6,10 @@ module.exports = {
     workboxOptions: {
       clientsClaim: true,
       skipWaiting: true
+    },
+    manifestOptions: {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      background_color: '#e52620'
     }
   }
 }
