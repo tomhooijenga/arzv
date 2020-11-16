@@ -1,7 +1,7 @@
 <template>
   <section :class="{show: show, full: full}"
            class="bottom-sheet">
-    <div :class="{'uk-background-primary': full, 'uk-light': full, 'uk-box-shadow-small': full}"
+    <div :class="{'uk-background-primary': full, 'uk-box-shadow-small': full}"
          class="header">
       <div class="uk-container uk-flex"
            @click="$emit(full ? 'close' : 'open')">
@@ -36,7 +36,7 @@ export default defineComponent({
   background: white;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(100%);
-  transition: transform .2s ease-in-out, height .2s ease-in-out;
+  transition: all .2s ease-in-out;
   overscroll-behavior: none;
 }
 
@@ -54,5 +54,9 @@ export default defineComponent({
   top: 0;
   z-index: 1;
   cursor: pointer;
+
+  .full & {
+    color: white;
+  }
 }
 </style>
