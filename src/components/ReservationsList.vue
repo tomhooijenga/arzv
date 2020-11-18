@@ -7,7 +7,8 @@
     <template v-for="({date, items}) in ownGrouped"
               :key="date">
       <h3 class="uk-margin">{{ format('eeee d MMMM', date) }}</h3>
-      <boat-list class="uk-margin-bottom">
+      <boat-list class="uk-margin-bottom"
+                 v-if="boats.length">
         <boat v-for="reservation in items"
               :key="reservation.start"
               :boat="findBoatByName(reservation.boat)"
@@ -57,7 +58,7 @@ export default defineComponent({
   setup () {
     const { auth } = useAuth()
     const { boats } = useBoats()
-    const { reservations, ownReservations, loadOwnReservations, cancelReservation } = useReservations()
+    const { reservations, ownReservations, cancelReservation } = useReservations()
 
     function groupByStart<T extends { start: Date }> (list: Array<T>) {
       const groups: { [key: string]: { date: Date; items: T[] } } = {}
@@ -72,12 +73,6 @@ export default defineComponent({
       return groups
     }
 
-    onMounted(() => {
-      if (auth.value) {
-        loadOwnReservations(auth.value)
-      }
-    })
-
     const allGrouped = computed(() => groupByStart(reservations.value))
     const ownGrouped = computed(() => groupByStart(ownReservations.value))
 
@@ -90,6 +85,7 @@ export default defineComponent({
     }
 
     return {
+      boats,
       allGrouped,
       ownGrouped,
       onCancel,

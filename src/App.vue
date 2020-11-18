@@ -61,12 +61,13 @@ export default {
     const { auth, setAuth } = useAuth()
     const { filters } = useFilters()
     const { boats, loadBoats } = useBoats()
-    const { reservations, reservationDate, loadReservations } = useReservations()
+    const { reservations, reservationDate, loadReservations, loadOwnReservations } = useReservations()
 
     watch(auth, (to: Auth) => {
       if (to) {
         loadBoats(to)
         loadReservations(to)
+        loadOwnReservations(to)
       }
     })
 
@@ -82,6 +83,7 @@ export default {
       } else {
         loadBoats(auth.value)
         loadReservations(auth.value)
+        loadOwnReservations(auth.value)
       }
     })
 

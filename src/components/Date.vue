@@ -54,8 +54,8 @@
     <template v-slot:title>
       Reserveringen
     </template>
-    <template v-if="state.showReservations" v-slot>
-      <reservations-list></reservations-list>
+    <template v-slot>
+      <reservations-list />
     </template>
   </bottom-sheet>
 </template>
