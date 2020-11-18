@@ -40,7 +40,7 @@ const handler = async function (event) {
         const [, boat, start, end] = $(item).find('.booking_info').text().match(/(.+) tussen (.+) en (.+)/)
         return {
           id,
-          boat,
+          boat: boat.trim(),
           person: '',
           start: zonedTimeToUtc(parse(start, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam'),
           end: zonedTimeToUtc(parse(end, 'dd-MM-yyyy HH:mm', 0), 'Europe/Amsterdam')

@@ -29,7 +29,7 @@ const handler = async function (event) {
       .map((boat) => {
         return {
           id: $('[name="boot_id"]', boat).val() || null,
-          name: $('[type="submit"]', boat).val(),
+          name: $('[type="submit"]', boat).val().trim(),
           type: $('.boot_type_label', boat).text(),
           instruction: $('.boot_instructie > .badge-success', boat).length === 1,
           use: $('[data-gebruik]', boat).data('gebruik') || 'Buiten gebruik',
