@@ -14,10 +14,13 @@
                 :key="boat.name"
                 :boat="boat"
                 :selected="true"
-                :removable="true"
-                @remove="unselectBoat(boat)"/>
+                icon="clear"
+                @clear="unselectBoat(boat)"/>
         </boat-list>
 
+        <p class="uk-text-center" v-if="state.valid">
+          Deze reservering kan nu niet gemaakt worden. Controleer of de boot niet al bezet is.
+        </p>
         <button :disabled="!state.valid"
                 class="uk-button uk-button-primary uk-display-block uk-margin-top uk-margin-bottom uk-margin-auto"
                 type="button"
@@ -34,6 +37,10 @@
           Jeugdboten mogen alleen buiten de jeugd bloktijden gebruikt worden.
         </p>
       </div>
+      <div v-if="state.loading"
+         class="uk-overlay-default uk-position-cover uk-flex">
+        <spinner />
+      </div>
     </template>
   </bottom-sheet>
 </template>
@@ -44,6 +51,7 @@ import { checkReservation } from '@/arzv'
 import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
+import spinner from '@/components/Spinner.vue'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
 import { Boat, BoatUse } from '@/types'
@@ -63,7 +71,8 @@ export default defineComponent({
   components: {
     bottomSheet,
     boat,
-    boatList
+    boatList,
+    spinner
   },
 
   setup (props, { emit }) {
@@ -72,7 +81,8 @@ export default defineComponent({
 
     const state = reactive({
       full: false,
-      valid: true
+      valid: true,
+      loading: false
     })
 
     watch(
@@ -112,9 +122,16 @@ export default defineComponent({
     }
 
     async function create () {
-      if (reservationDate.value) {
+      if (!reservationDate.value) {
+        return
+      }
+
+      try {
+        state.loading = true
         await makeReservation(auth.value, props.boats, reservationDate.value)
         emit('reserve')
+      } finally {
+        state.loading = false
       }
     }
 
