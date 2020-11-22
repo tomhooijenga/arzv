@@ -19,6 +19,9 @@
     </template>
   </div>
   <hr/>
+
+  <timeline />
+
   <h1 class="uk-container uk-margin-top uk-margin">Ook op het water</h1>
   <template v-for="({date, items}) in allGrouped"
             :key="date">
@@ -44,6 +47,7 @@ import nl from 'date-fns/locale/nl'
 import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
+import timeline from '@/components/Timeline.vue'
 import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
 import { OwnReservation } from '@/types'
@@ -52,7 +56,8 @@ export default defineComponent({
 
   components: {
     boat,
-    boatList
+    boatList,
+    timeline
   },
 
   setup () {
