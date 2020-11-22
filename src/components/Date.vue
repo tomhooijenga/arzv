@@ -48,7 +48,7 @@
     </div>
   </div>
 
-  <bottom-sheet :full="state.showReservations"
+  <bottom-sheet :full="true"
                 :show="state.showReservations"
                 @close="state.showReservations = false">
     <template v-slot:title>
