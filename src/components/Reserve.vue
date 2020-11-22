@@ -18,8 +18,8 @@
                 @clear="unselectBoat(boat)"/>
         </boat-list>
 
-        <p class="uk-text-center" v-if="state.valid">
-          Deze reservering kan nu niet gemaakt worden. Controleer of de boot niet al bezet is.
+        <p class="uk-text-center" v-if="!state.valid">
+          Deze reservering kan nu niet gemaakt worden. Controleer of de boot bezet is.
         </p>
         <button :disabled="!state.valid"
                 class="uk-button uk-button-primary uk-display-block uk-margin-top uk-margin-bottom uk-margin-auto"

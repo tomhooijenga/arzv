@@ -8,7 +8,7 @@
         <div class="uk-padding-small uk-padding-remove-horizontal uk-text-truncate uk-width-1-1">
           <slot name="title"></slot> &nbsp;
         </div>
-        <span v-if="full" class="uk-margin-auto-vertical">&times;</span>
+        <icon class="icon uk-margin-auto-vertical" :name="full ? 'expand_more' : 'expand_less'" />
       </div>
     </div>
 
@@ -18,11 +18,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Icon from './Icon.vue'
 
 export default defineComponent({
   props: {
     show: Boolean,
     full: Boolean
+  },
+
+  components: {
+    Icon
   }
 })
 </script>
@@ -36,7 +41,7 @@ export default defineComponent({
   background: white;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
   transform: translateY(100%);
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   overscroll-behavior: none;
 }
 
@@ -47,6 +52,10 @@ export default defineComponent({
 .full {
   height: 100%;
   overflow-y: auto;
+
+  .header {
+    color: white;
+  }
 }
 
 .header {
@@ -54,9 +63,9 @@ export default defineComponent({
   top: 0;
   z-index: 1;
   cursor: pointer;
+}
 
-  .full & {
-    color: white;
-  }
+.icon {
+  font-size: 2rem;
 }
 </style>

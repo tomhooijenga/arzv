@@ -12,9 +12,9 @@
         <boat v-for="reservation in items"
               :key="reservation.start"
               :boat="findBoatByName(reservation.boat)"
-              :removable="true"
               :reservation="reservation"
-              @remove="onCancel(reservation)"/>
+              icon="clear"
+              @clear="onCancel(reservation)"/>
       </boat-list>
     </template>
   </div>

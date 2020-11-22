@@ -13,7 +13,7 @@
               @click="removeFilter(filter)"
       >
         {{ format(filter, value) }}
-        <span class="close">&times;</span>
+        <icon class="clear" name="clear"></icon>
       </button>
 
     <button v-if="filters.minWeight && filters.maxWeight"
@@ -22,7 +22,7 @@
             @click="removeFilter('minWeight'); removeFilter('maxWeight')"
     >
       {{ filters.minWeight }} - {{filters.maxWeight}} kg
-      <span class="close">&times;</span>
+      <icon class="clear" name="clear"></icon>
     </button>
   </div>
 
@@ -144,7 +144,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
-import modal from '@/components/Modal.vue'
+import Icon from '@/components/Icon.vue'
+import Modal from '@/components/Modal.vue'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
 import { isEmpty } from '@/filter'
@@ -152,7 +153,8 @@ import { Filters } from '@/types'
 
 export default defineComponent({
   components: {
-    modal
+    Icon,
+    Modal
   },
 
   setup () {
@@ -240,12 +242,11 @@ export default defineComponent({
   display: flex;
   align-items: center;
   padding-right: 0;
+}
 
-  .close {
-    font-size: 120%;
-    padding: 0 10px;
-    margin-top: -5px;
-  }
+.clear {
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 .weight-range {

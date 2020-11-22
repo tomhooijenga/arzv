@@ -4,9 +4,9 @@
       <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': disabled}">
         <span class="uk-width-1-1 uk-text-truncate">{{ boat.name }}</span>
         <span class="close"
-              v-if="removable"
-              @click="$emit('remove')">
-          &times;
+              v-if="icon"
+              @click="$emit(icon)">
+          <icon :name="icon"></icon>
         </span>
       </h3>
     </div>
@@ -40,6 +40,7 @@
 import { defineComponent } from 'vue'
 import { format } from 'date-fns'
 import { BoatUse } from '@/types'
+import Icon from '@/components/Icon.vue'
 
 export default defineComponent({
   props: {
@@ -47,10 +48,14 @@ export default defineComponent({
     selected: Boolean,
     disabled: Boolean,
     reservation: Object,
-    removable: Boolean
+    icon: String
   },
 
   emits: ['remove'],
+
+  components: {
+    Icon
+  },
 
   methods: {
     enabled (permission) {
