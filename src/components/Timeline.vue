@@ -11,7 +11,7 @@
       </div>
 
       <div class="tracks uk-overflow-auto">
-        <div class="track">
+        <div class="track track-slots">
           <div v-for="slot of slots"
                :key="slot.start"
                class="slot"
@@ -50,6 +50,15 @@
             </div>
           </template>
         </div>
+
+        <div class="track track-slots">
+          <div v-for="slot of slots"
+               :key="slot.start"
+               class="slot"
+               :style="{ width: offset(slot.start, slot.end) + 'px' }">
+            {{format('p', slot.start)}}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -69,7 +78,6 @@ export default defineComponent({
 
     function groupByBoat<T extends Reservation> (list: Array<T>) {
       const groups: { [key: string]: { boat: string; items: T[] } } = {}
-      const sortedGroups: { [key: string]: { boat: string; items: T[] } } = {}
 
       list.forEach((item: T) => {
         const boat = item.boat
@@ -80,15 +88,13 @@ export default defineComponent({
 
       Object
         .keys(groups)
-        .sort()
         .forEach((key) => {
           groups[key].items.sort(({ start: startA }, { start: startB }) => {
             return compareAsc(startA, startB)
           })
-          sortedGroups[key] = groups[key]
         })
 
-      return sortedGroups
+      return groups
     }
 
     const tracks = computed(() => {
@@ -145,7 +151,19 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-$track-height: 2.5rem;
+$track-height: 2rem;
+$track-padding: .25rem 0;
+$slot-width: 100px;
+
+@mixin slot-guides {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 1px;
+    top: $track-height;
+    bottom: $track-height;
+    transition: background-color .2s linear;
+}
 
 .boats {
   flex: 1 0 auto;
@@ -157,11 +175,8 @@ $track-height: 2.5rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding: $track-padding;
   padding-right: 0.5rem;
-
-  + .boat {
-    margin-top: 0.5rem;
-  }
 }
 
 .tracks {
@@ -172,21 +187,27 @@ $track-height: 2.5rem;
   display: flex;
   flex-direction: row;
   height: $track-height;
+  padding: $track-padding;
+  padding-left: $slot-width / 2;
 
-  + .track {
-    padding-left: 50px;
-    margin-top: 0.5rem;
+  &-slots {
+    padding-left: 0;
+  }
 
-    &::after {
-      display: block;
-      position: absolute;
-      content: '';
-      background: #e5e5e5;
-      margin-top: $track-height / 2;
-      left: 0;
-      height: 1px;
-      width: 50px;
-     }
+  &:not(&-slots)::before {
+    display: block;
+    position: absolute;
+    content: '';
+    background-color: #e5e5e5;
+    margin-top: $track-height / 2;
+    left: 0;
+    height: 1px;
+    width: $slot-width / 2;
+    transition: background-color .2s linear;
+  }
+
+  &:hover::before {
+    background-color: #1e87f0;
   }
 }
 
@@ -195,6 +216,12 @@ $track-height: 2.5rem;
   flex: none;
   align-items: center;
   justify-content: center;
+
+  &::after {
+    @include slot-guides();
+    z-index: -1;
+    background-color: #e5e5e5;
+  }
 }
 
 .offset {
@@ -205,6 +232,11 @@ $track-height: 2.5rem;
   hr {
     flex: 1;
     margin: auto;
+    transition: border-color .2s linear;
+
+    .track:hover & {
+      border-color: #1e87f0;
+    }
   }
 }
 
@@ -214,28 +246,24 @@ $track-height: 2.5rem;
   box-sizing: border-box;
   width: var(--width);
 
-  &::before,
-  &::after {
-    display: block;
-    position: absolute;
-    content: '';
-    top: $track-height;
-    bottom: 0;
-    background: #f5f5f5;
-    z-index: -1;
-    width: 1px;
-  }
-
-  &::after {
-    margin-left: var(--width);
-  }
-
   &-inner {
-    flex: 1;
     display: flex;
+    flex: 1;
     justify-content: center;
     align-items: center;
     background: #f5f5f5;
+  }
+
+  &:hover {
+    &::before,
+    &::after {
+      @include slot-guides();
+      background-color: #1e87f0;
+    }
+
+    &::after {
+      margin-left: var(--width)
+    }
   }
 }
 </style>
