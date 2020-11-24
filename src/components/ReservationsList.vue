@@ -20,23 +20,13 @@
   </div>
   <hr/>
 
-  <timeline />
-
-  <h1 class="uk-container uk-margin-top uk-margin">Ook op het water</h1>
-  <template v-for="({date, items}) in allGrouped"
-            :key="date">
-    <h3 class="uk-container uk-margin">{{ format('eeee d MMMM', date) }}</h3>
-    <section class="uk-container uk-overflow-auto">
-      <table class="uk-table uk-table-divider uk-table-small uk-text-nowrap">
-        <tr v-for="reservation in items"
-            :key="reservation.start">
-          <td>{{ format('p', reservation.start) }} - {{ format('p', reservation.end) }}</td>
-          <td class="uk-text-italic">{{ reservation.boat }}</td>
-          <td>{{ reservation.person }}</td>
-        </tr>
-      </table>
-    </section>
-  </template>
+  <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">Ook op het water</h1>
+  <section v-for="({date, items}) in allGrouped"
+            :key="date"
+            class="uk-container uk-container-expand uk-margin">
+    <h3>{{ format('eeee d MMMM', date) }}</h3>
+    <timeline :reservations="items" />
+  </section>
 </template>
 
 <script lang="ts">

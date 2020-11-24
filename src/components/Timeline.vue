@@ -1,63 +1,60 @@
 <template>
-  <div class="uk-container uk-container-expand">
-    <div class="uk-flex">
-      <div class="boats">
-        <div class="boat"></div>
-        <div v-for="{ boat } of tracks" :key="boat"
-             class="boat">
-          {{ boat }}
-          <hr />
+  <div class="uk-flex">
+    <div class="boats">
+      <div class="boat"></div>
+      <div v-for="{ boat } of tracks" :key="boat"
+            class="boat">
+        {{ boat }}
+        <hr />
+      </div>
+    </div>
+
+    <div class="tracks uk-overflow-auto">
+      <div class="track track-slots">
+        <div v-for="slot of slots"
+              :key="slot.start"
+              class="slot"
+              :style="{ width: offset(slot.start, slot.end) + 'px' }">
+          {{format('p', slot.start)}}
         </div>
       </div>
-
-      <div class="tracks uk-overflow-auto">
-        <div class="track track-slots">
-          <div v-for="slot of slots"
-               :key="slot.start"
-               class="slot"
-               :style="{ width: offset(slot.start, slot.end) + 'px' }">
-            {{format('p', slot.start)}}
-          </div>
-        </div>
-
+      <div
+        v-for="{ boat, items: reservations } of tracks"
+        :key="boat"
+        class="track"
+      >
         <div
-          v-for="{ boat, items: reservations } of tracks"
-          :key="boat"
-          class="track"
+          v-if="offset(first.start, reservations[0].start)"
+          :style="{ width: offset(first.start, reservations[0].start) + 'px' }"
+          class="offset"
+        >
+          <hr />
+        </div>
+        <template
+          v-for="(reservation, index) of reservations"
+          :key="reservation.person"
         >
           <div
-            v-if="offset(first.start, reservations[0].start)"
-            :style="{ width: offset(first.start, reservations[0].start) + 'px' }"
+            v-if="index > 0 && offset(reservations[index - 1].end, reservation.start)"
+            :style="{ width: offset(reservations[index - 1].end, reservation.start) + 'px' }"
             class="offset"
           >
             <hr />
           </div>
-          <template
-            v-for="(reservation, index) of reservations"
-            :key="reservation.person"
-          >
-            <div
-              v-if="index > 0 && offset(reservations[index - 1].end, reservation.start)"
-              :style="{ width: offset(reservations[index - 1].end, reservation.start) + 'px' }"
-              class="offset"
-            >
-              <hr />
+          <div :style="{ '--width': offset(reservation.start, reservation.end) + 'px' }" class="person">
+            <div class="person-inner">
+              {{ reservation.person }}
             </div>
-            <div :style="{ '--width': offset(reservation.start, reservation.end) + 'px' }" class="person">
-              <div class="person-inner">
-                {{ reservation.person }}
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <div class="track track-slots">
-          <div v-for="slot of slots"
-               :key="slot.start"
-               class="slot"
-               :style="{ width: offset(slot.start, slot.end) + 'px' }">
-            {{format('p', slot.start)}}
           </div>
+        </template>
+      </div>
+
+      <div class="track track-slots">
+        <div v-for="slot of slots"
+              :key="slot.start"
+              class="slot"
+              :style="{ width: offset(slot.start, slot.end) + 'px' }">
+          {{format('p', slot.start)}}
         </div>
       </div>
     </div>
@@ -65,17 +62,22 @@
 </template>
 
 <script lang="ts">
-import { useReservations } from '@/effects/use-reservations'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { addMinutes, compareAsc, differenceInMinutes } from 'date-fns'
 import { Reservation } from '@/types'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'
 
 export default defineComponent({
-  setup () {
-    const { reservations } = useReservations()
 
+  props: {
+    reservations: {
+      type: Array as PropType<Reservation[]>,
+      default: []
+    }
+  },
+
+  setup (props) {
     function groupByBoat<T extends Reservation> (list: Array<T>) {
       const groups: { [key: string]: { boat: string; items: T[] } } = {}
 
@@ -98,7 +100,7 @@ export default defineComponent({
     }
 
     const tracks = computed(() => {
-      return groupByBoat(reservations.value)
+      return groupByBoat(props.reservations)
     })
 
     const SLOT_WIDTH = 100
@@ -108,12 +110,12 @@ export default defineComponent({
     }
 
     const first = computed(() => {
-      return reservations.value.sort(({ start: startA }, { start: startB }) => {
+      return [...props.reservations].sort(({ start: startA }, { start: startB }) => {
         return compareAsc(startA, startB)
       })[0]
     })
     const slots = computed(() => {
-      const sorted = reservations.value.sort(({ start: startA }, { start: startB }) => {
+      const sorted = [...props.reservations].sort(({ start: startA }, { start: startB }) => {
         return compareAsc(startA, startB)
       })
 
@@ -154,23 +156,24 @@ export default defineComponent({
 $track-height: 2rem;
 $track-padding: .25rem 0;
 $slot-width: 100px;
+$guide-color: #e5e5e5;
+$guide-width: 1px;
 
 @mixin slot-guides {
     content: '';
     display: block;
     position: absolute;
-    width: 1px;
+    width: $guide-width;
     top: $track-height;
     bottom: $track-height;
     transition: background-color .2s linear;
 }
 
 .boats {
-  flex: 1 0 auto;
+  white-space: nowrap;
 }
 
 .boat {
-  flex: none;
   height: $track-height;
   display: flex;
   align-items: center;
@@ -185,7 +188,7 @@ $slot-width: 100px;
 
 .track {
   display: flex;
-  flex-direction: row;
+  width: max-content;
   height: $track-height;
   padding: $track-padding;
   padding-left: $slot-width / 2;
@@ -198,7 +201,7 @@ $slot-width: 100px;
     display: block;
     position: absolute;
     content: '';
-    background-color: #e5e5e5;
+    background-color: $guide-color;
     margin-top: $track-height / 2;
     left: 0;
     height: 1px;
@@ -211,22 +214,25 @@ $slot-width: 100px;
   }
 }
 
+.day {
+  position: sticky;
+  left: 0;
+}
+
 .slot {
   display: flex;
-  flex: none;
   align-items: center;
   justify-content: center;
 
   &::after {
     @include slot-guides();
     z-index: -1;
-    background-color: #e5e5e5;
+    background-color: $guide-color;
   }
 }
 
 .offset {
   display: flex;
-  flex: none;
   box-sizing: border-box;
 
   hr {
@@ -241,7 +247,6 @@ $slot-width: 100px;
 }
 
 .person {
-  flex: none;
   display: flex;
   box-sizing: border-box;
   width: var(--width);
@@ -252,6 +257,7 @@ $slot-width: 100px;
     justify-content: center;
     align-items: center;
     background: #f5f5f5;
+    margin: 0 0.125rem;
   }
 
   &:hover {
