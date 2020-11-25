@@ -1,8 +1,3 @@
-const fetch = require('node-fetch')
-const qs = require('querystring')
-const { format } = require('date-fns')
-const cheerio = require('cheerio')
-const { zonedTimeToUtc } = require('date-fns-tz/esm')
 const { utcToZonedTime } = require('date-fns-tz')
 
 const handler = async function (event) {
