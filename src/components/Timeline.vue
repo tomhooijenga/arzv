@@ -42,7 +42,7 @@
             <hr />
           </div>
           <div :style="{ '--width': offset(reservation.start, reservation.end) + 'px' }" class="person">
-            <div class="person-inner">
+            <div class="person-inner uk-text-truncate">
               {{ reservation.person }}
             </div>
           </div>
@@ -247,17 +247,19 @@ $guide-width: 1px;
 }
 
 .person {
-  display: flex;
-  box-sizing: border-box;
   width: var(--width);
 
   &-inner {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
     background: #f5f5f5;
     margin: 0 0.125rem;
+    padding: 0 0.125rem;
+    line-height: $track-height;
+    text-align: center;
+  }
+
+  &-sticky {
+    position: sticky;
+    left: 0;
   }
 
   &:hover {
