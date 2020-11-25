@@ -12,10 +12,9 @@
     <div class="tracks uk-overflow-auto">
       <div class="track track-slots">
         <div v-for="slot of slots"
-              :key="slot.start"
-              class="slot"
-              :style="{ width: offset(slot.start, slot.end) + 'px' }">
-          {{format('p', slot.start)}}
+              :key="slot"
+              class="slot">
+          {{format('p', slot)}}
         </div>
       </div>
       <div
@@ -51,10 +50,9 @@
 
       <div class="track track-slots">
         <div v-for="slot of slots"
-              :key="slot.start"
-              class="slot"
-              :style="{ width: offset(slot.start, slot.end) + 'px' }">
-          {{format('p', slot.start)}}
+              :key="slot"
+              class="slot">
+          {{format('p', slot)}}
         </div>
       </div>
     </div>
@@ -125,19 +123,11 @@ export default defineComponent({
 
       const slots = []
       const last = sorted[sorted.length - 1].end
-      let slotStart = sorted[0].start
-      let slotEnd = addMinutes(slotStart, 30)
-
-      while (slotEnd <= last) {
-        slots.push({
-          start: slotStart,
-          end: slotEnd
-        })
-
-        slotStart = slotEnd
-        slotEnd = addMinutes(slotStart, 30)
+      let current = first.value.start
+      while (current <= last) {
+        slots.push(current)
+        current = addMinutes(current, 30)
       }
-
       return slots
     })
 
@@ -153,6 +143,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+$slot-width: 100px;
 $track-height: 2rem;
 $track-padding: .25rem 0;
 $slot-width: 100px;
@@ -214,15 +205,11 @@ $guide-width: 1px;
   }
 }
 
-.day {
-  position: sticky;
-  left: 0;
-}
-
 .slot {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: $slot-width;
 
   &::after {
     @include slot-guides();
