@@ -8,8 +8,8 @@ const handler = async function (event) {
         statusCode: 200,
         body: JSON.stringify({
             input: date,
-            date: new Date(date),
-            utc: utcToZonedTime(date, 'Europe/Amsterdam')
+            date: new Date(date).toString(),
+            utc: utcToZonedTime(date, 'Europe/Amsterdam').toString()
         })
     }
 }
