@@ -143,7 +143,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-$slot-width: 100px;
 $track-height: 2rem;
 $track-padding: .25rem 0;
 $slot-width: 100px;
@@ -157,7 +156,7 @@ $guide-width: 1px;
     width: $guide-width;
     top: $track-height;
     bottom: $track-height;
-    transition: background-color .2s linear;
+    transition: all .2s linear;
 }
 
 .boats {
@@ -249,15 +248,21 @@ $guide-width: 1px;
     left: 0;
   }
 
+  &::before,
+  &::after {
+    @include slot-guides();
+    background-color: #1e87f0;
+    opacity: 0;
+  }
+
+  &::after {
+    margin-left: var(--width)
+  }
+
   &:hover {
     &::before,
     &::after {
-      @include slot-guides();
-      background-color: #1e87f0;
-    }
-
-    &::after {
-      margin-left: var(--width)
+      opacity: 1;
     }
   }
 }
