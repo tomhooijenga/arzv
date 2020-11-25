@@ -1,6 +1,6 @@
 [build]
 publish = "dist/"
-command = "npm run build && cd functions && npm ci"
+command = "mkdir dist/ && cd functions && npm ci"
 functions = "functions"
 
 [[redirects]]
