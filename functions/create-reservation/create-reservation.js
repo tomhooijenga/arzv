@@ -2,13 +2,14 @@ const fetch = require('node-fetch')
 const qs = require('querystring')
 const { format } = require('date-fns')
 const cheerio = require('cheerio')
+const { utcToZonedTime } = require('date-fns-tz')
 
 const handler = async function (event) {
   try {
     const { authorization } = event.headers
     const body = JSON.parse(event.body)
-    const start = new Date(body.start)
-    const end = new Date(body.end)
+    const start = utcToZonedTime(body.start, 'Europe/Amsterdam')
+    const end = utcToZonedTime(body.end, 'Europe/Amsterdam')
 
     const response = await fetch('https://roei.arzv.nl/blocks/arzv_boot_afschrijven/make_booking.php', {
       method: 'POST',
@@ -18,9 +19,9 @@ const handler = async function (event) {
       },
       body: qs.stringify({
         boat_array: body.boats.join(','),
-        start_date: format(start, 'dd-MM-yyyy'),
+        start_date: format(start, 'yyyy-MM-dd'),
         start_time: format(start, 'HH:mm'),
-        end_date: format(end, 'dd-MM-yyyy'),
+        end_date: format(end, 'yyyy-MM-dd'),
         end_time: format(end, 'HH:mm'),
         other_booking_id: body.user_id
       })
@@ -37,8 +38,6 @@ const handler = async function (event) {
         })
       }
     }
-
-    console.log(response.url, response.status, doc)
 
     const $ = cheerio.load(doc)
     const results = $('.booking_good, .booking_bad')

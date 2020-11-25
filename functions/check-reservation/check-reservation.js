@@ -2,13 +2,14 @@ const fetch = require('node-fetch')
 const qs = require('querystring')
 const { format } = require('date-fns')
 const cheerio = require('cheerio')
+const { utcToZonedTime } = require('date-fns-tz')
 
 const handler = async function (event) {
   try {
     const { authorization } = event.headers
     const body = JSON.parse(event.body)
-    const start = new Date(body.start)
-    const end = new Date(body.end)
+    const start = utcToZonedTime(body.start, 'Europe/Amsterdam')
+    const end = utcToZonedTime(body.end, 'Europe/Amsterdam')
 
     const response = await fetch('https://roei.arzv.nl/blocks/arzv_boot_afschrijven/test_booking.php', {
       method: 'POST',
