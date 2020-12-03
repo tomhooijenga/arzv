@@ -33,16 +33,10 @@ const filterFns: {
     return list.filter(({ weight }) => {
       return weight === null || weight <= value
     })
-  },
-
-  include (list, value: string[]) {
-    return list.filter(({ name }) => {
-      return value.includes(name)
-    })
   }
 }
 
-export function isEmpty (value: any): value is null {
+export function isEmpty (value: unknown): value is null {
   if (value === null || value === '') {
     return true
   }

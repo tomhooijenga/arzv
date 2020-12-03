@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { format } from 'date-fns'
 import { formatWithOptions } from 'date-fns/fp'
 import nl from 'date-fns/locale/nl'

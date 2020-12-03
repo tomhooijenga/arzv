@@ -22,7 +22,7 @@ export default defineComponent({
 div {
   line-height: 1;
 
-  & ::v-deep svg {
+  &::v-deep(svg) {
     fill: currentColor;
     height: 1em;
     width: 1em;
