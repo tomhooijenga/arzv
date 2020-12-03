@@ -17,7 +17,7 @@ module.exports = {
       skipWaiting: true
     },
     manifestOptions: {
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       background_color: '#e52620'
     }
   }

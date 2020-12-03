@@ -20,6 +20,13 @@ export interface Auth {
   token: string;
 }
 
+export enum BoatUse {
+  General= 'Algemeen',
+  Competition = 'Wedstrijd',
+  Youth = 'Jeugd',
+  None = 'Buiten Gebruik'
+}
+
 export interface Boat {
   id: string | null;
   name: string;
@@ -30,13 +37,6 @@ export interface Boat {
   sweep: string;
   steer: string;
   instruction: boolean;
-}
-
-export enum BoatUse {
-  General= 'Algemeen',
-  Competition = 'Wedstrijd',
-  Youth = 'Jeugd',
-  None = 'Buiten Gebruik'
 }
 
 export interface Filters {
