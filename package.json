@@ -14,7 +14,7 @@
     "fuzzysearch": "^1.0.3",
     "register-service-worker": "^1.7.1",
     "uikit": "^3.5.10",
-    "vue": "^3.0.4"
+    "vue": "^3.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.9.0",
