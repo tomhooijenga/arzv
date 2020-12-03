@@ -21,7 +21,7 @@ export interface Auth {
 }
 
 export enum BoatUse {
-  General= 'Algemeen',
+  General = 'Algemeen',
   Competition = 'Wedstrijd',
   Youth = 'Jeugd',
   None = 'Buiten Gebruik'

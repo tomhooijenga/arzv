@@ -55,7 +55,7 @@
       Reserveringen
     </template>
     <template v-slot>
-      <reservations-list />
+      <reservations-list/>
     </template>
   </bottom-sheet>
 </template>

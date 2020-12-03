@@ -28,7 +28,8 @@
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} reserveren
         </button>
         <p class="uk-text-center uk-text-meta" v-if="reservationDate">
-          {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot {{ format('HH:mm', reservationDate.end) }}
+          {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot
+          {{ format('HH:mm', reservationDate.end) }}
         </p>
         <p class="uk-text-center uk-text-meta" v-if="hasCompetition">
           Wedstrijdboten mogen alleen gebruikt worden met toestemming van de wedstrijdcommissie.
@@ -38,8 +39,8 @@
         </p>
       </div>
       <div v-if="state.loading"
-         class="uk-overlay-default uk-position-cover uk-flex">
-        <spinner />
+           class="uk-overlay-default uk-position-cover uk-flex">
+        <spinner/>
       </div>
     </template>
   </bottom-sheet>

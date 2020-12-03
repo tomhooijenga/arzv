@@ -1,6 +1,6 @@
 <template>
   <modal :show="show">
-    <img src="@/assets/logo.png" class="uk-display-block uk-margin uk-margin-auto" />
+    <img src="@/assets/logo.png" class="uk-display-block uk-margin uk-margin-auto"/>
 
     <p v-if="state.error" class="uk-text-danger">Ongeldige gebruikersnaam of wachtwoord</p>
 
@@ -35,7 +35,7 @@
 
     <div v-if="state.loading"
          class="uk-overlay-default uk-position-cover uk-flex">
-      <spinner />
+      <spinner/>
     </div>
   </modal>
 </template>

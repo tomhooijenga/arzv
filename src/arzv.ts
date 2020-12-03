@@ -2,7 +2,7 @@ import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/type
 
 const root = '/.netlify/functions/'
 
-export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string}> {
+export async function authenticate (username: string, password: string): Promise<{ success: true; id: string; token: string } | { success: false; error: string }> {
   const response = await fetch(root + 'authenticate', {
     method: 'POST',
     headers: {
@@ -33,7 +33,12 @@ export async function getReservations (auth: Auth): Promise<Reservation[]> {
     }
   })
   const { reservations } = await response.json()
-  return reservations.map(({ boat, start, end, person }: { boat: string; start: string; end: string; person: string }) => ({
+  return reservations.map(({
+    boat,
+    start,
+    end,
+    person
+  }: { boat: string; start: string; end: string; person: string }) => ({
     start: new Date(start),
     end: new Date(end),
     boat,
@@ -48,7 +53,13 @@ export async function getOwnReservations (auth: Auth): Promise<OwnReservation[]>
     }
   })
   const { reservations } = await response.json()
-  return reservations.map(({ id, boat, start, end, person }: { id: string; boat: string; start: string; end: string; person: string }) => ({
+  return reservations.map(({
+    id,
+    boat,
+    start,
+    end,
+    person
+  }: { id: string; boat: string; start: string; end: string; person: string }) => ({
     id,
     start: new Date(start),
     end: new Date(end),

@@ -3,18 +3,18 @@
     <div class="boats">
       <div class="boat"></div>
       <div v-for="{ boat } of tracks" :key="boat"
-            class="boat">
+           class="boat">
         {{ boat }}
-        <hr />
+        <hr/>
       </div>
     </div>
 
     <div class="tracks uk-overflow-auto">
       <div class="track track-slots">
         <div v-for="slot of slots"
-              :key="slot"
-              class="slot">
-          {{format('p', slot)}}
+             :key="slot"
+             class="slot">
+          {{ format('p', slot) }}
         </div>
       </div>
       <div
@@ -27,7 +27,7 @@
           :style="{ width: offset(first.start, reservations[0].start) + 'px' }"
           class="offset"
         >
-          <hr />
+          <hr/>
         </div>
         <template
           v-for="(reservation, index) of reservations"
@@ -38,10 +38,10 @@
             :style="{ width: offset(reservations[index - 1].end, reservation.start) + 'px' }"
             class="offset"
           >
-            <hr />
+            <hr/>
           </div>
           <div :style="{ '--width': offset(reservation.start, reservation.end) + 'px' }" class="person">
-            <div class="person-inner uk-text-truncate">
+            <div class="person-inner uk-text-truncate" :title="reservation.person">
               {{ reservation.person }}
             </div>
           </div>
@@ -50,9 +50,9 @@
 
       <div class="track track-slots">
         <div v-for="slot of slots"
-              :key="slot"
-              class="slot">
-          {{format('p', slot)}}
+             :key="slot"
+             class="slot">
+          {{ format('p', slot) }}
         </div>
       </div>
     </div>
@@ -102,6 +102,7 @@ export default defineComponent({
     })
 
     const SLOT_WIDTH = 100
+
     function offset (left: Date, right: Date): number {
       const minutes = differenceInMinutes(right, left)
       return (Math.abs(minutes) / 30) * SLOT_WIDTH
@@ -150,13 +151,13 @@ $guide-color: #e5e5e5;
 $guide-width: 1px;
 
 @mixin slot-guides {
-    content: '';
-    display: block;
-    position: absolute;
-    width: $guide-width;
-    top: $track-height;
-    bottom: $track-height;
-    transition: all .2s linear;
+  content: '';
+  display: block;
+  position: absolute;
+  width: $guide-width;
+  top: $track-height;
+  bottom: $track-height;
+  transition: all .2s linear;
 }
 
 .boats {

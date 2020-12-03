@@ -22,10 +22,10 @@
 
   <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">Ook op het water</h1>
   <section v-for="({date, items}) in allGrouped"
-            :key="date"
-            class="uk-container uk-container-expand uk-margin">
+           :key="date"
+           class="uk-container uk-container-expand uk-margin">
     <h3>{{ format('eeee d MMMM', date) }}</h3>
-    <timeline :reservations="items" />
+    <timeline :reservations="items"/>
   </section>
 </template>
 

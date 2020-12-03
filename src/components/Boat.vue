@@ -13,7 +13,7 @@
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">
         <span class="uk-text-bold">{{ boat.type }}</span>
-        <hr class="uk-divider-vertical" />
+        <hr class="uk-divider-vertical"/>
         <span :class="enabled(boat.scull) ? 'uk-text-primary' : ''">
           {{ boat.scull }}
         </span>
@@ -26,7 +26,7 @@
       </div>
       <div class="uk-flex uk-flex-between">
         <span :class="useClass()">{{ boat.use }}</span>
-        <span v-if="boat.weight">{{ boat.weight}} kg</span>
+        <span v-if="boat.weight">{{ boat.weight }} kg</span>
         <span v-else>Geen</span>
       </div>
       <div v-if="reservation" class="uk-margin-small-top">
@@ -62,7 +62,10 @@ export default defineComponent({
       return !permission.includes('-')
     },
     useClass () {
-      const { id, use } = this.boat
+      const {
+        id,
+        use
+      } = this.boat
 
       return {
         'uk-text-danger': !id,

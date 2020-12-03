@@ -8,7 +8,7 @@
         <div class="uk-padding-small uk-padding-remove-horizontal uk-text-truncate uk-width-1-1">
           <slot name="title"></slot> &nbsp;
         </div>
-        <icon class="icon uk-margin-auto-vertical" :name="full ? 'expand_more' : 'expand_less'" />
+        <icon class="icon uk-margin-auto-vertical" :name="full ? 'expand_more' : 'expand_less'"/>
       </div>
     </div>
 

@@ -35,6 +35,7 @@ async function cancelReservation (auth: Auth, reservation: OwnReservation) {
     loadOwnReservations(auth)
   ])
 }
+
 export function useReservations () {
   return {
     reservations,

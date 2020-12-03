@@ -6,22 +6,22 @@
       Filter&hellip;
     </button>
     <hr class="uk-divider-vertical"/>
-      <button v-for="(value, filter) in activeFilters"
-              :key="filter"
-              class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
-              type="button"
-              @click="removeFilter(filter)"
-      >
-        {{ format(filter, value) }}
-        <icon class="clear" name="clear"></icon>
-      </button>
+    <button v-for="(value, filter) in activeFilters"
+            :key="filter"
+            class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
+            type="button"
+            @click="removeFilter(filter)"
+    >
+      {{ format(filter, value) }}
+      <icon class="clear" name="clear"></icon>
+    </button>
 
     <button v-if="filters.minWeight && filters.maxWeight"
             class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
             type="button"
             @click="removeFilter('minWeight'); removeFilter('maxWeight')"
     >
-      {{ filters.minWeight }} - {{filters.maxWeight}} kg
+      {{ filters.minWeight }} - {{ filters.maxWeight }} kg
       <icon class="clear" name="clear"></icon>
     </button>
   </div>
@@ -38,7 +38,7 @@
           <option :value="null">Alle</option>
           <option v-for="type in types"
                   :key="type">
-            {{type}}
+            {{ type }}
           </option>
         </select>
       </div>
@@ -51,7 +51,7 @@
           <option :value="null">Alle</option>
           <option v-for="use in uses"
                   :key="use">
-            {{use}}
+            {{ use }}
           </option>
         </select>
       </div>
@@ -138,7 +138,8 @@
       </div>
     </div>
     <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
-    <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer</button>
+    <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer
+    </button>
   </modal>
 </template>
 
@@ -272,11 +273,21 @@ export default defineComponent({
     position: absolute;
     pointer-events: none;
 
-    &::-webkit-slider-runnable-track { @include track }
-    &::-moz-range-track { @include track }
+    &::-webkit-slider-runnable-track {
+      @include track
+    }
 
-    &::-webkit-slider-thumb { @include thumb }
-    &::-moz-range-thumb { @include thumb }
+    &::-moz-range-track {
+      @include track
+    }
+
+    &::-webkit-slider-thumb {
+      @include thumb
+    }
+
+    &::-moz-range-thumb {
+      @include thumb
+    }
   }
 }
 </style>
