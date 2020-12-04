@@ -165,16 +165,15 @@ export default defineComponent({
       showModal.value = false
     }
 
-    const filterFormats: { [key: string]: (value: any) => string } = {
+    const filterFormats: { [key: string]: (value: never) => string } = {
       name: (value: string) => `"${value}"`,
       weight: ({ min, max }: { min: number, max: number }) => `${min} - ${max} kg`,
       instruction: (value: boolean) => value ? 'Instructie' : 'Geen instructie',
       reserved: (value: boolean) => value ? 'Gereserveerd' : 'Niet gereserveerd'
     }
 
-    function format (filter: string, value: unknown): string {
-      const formatter = filterFormats[filter]
-      return formatter === undefined ? `${value}` : formatter(value)
+    function format (filter: string, value: never): string {
+      return filter in filterFormats ? filterFormats[filter](value) : `${value}`
     }
 
     const { boats } = useBoats()

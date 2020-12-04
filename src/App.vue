@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, reactive, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
 import { filter } from '@/filter'
 import { checkToken } from '@/arzv'
 import boat from '@/components/Boat.vue'
@@ -46,7 +46,7 @@ import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
 import { areIntervalsOverlapping } from 'date-fns'
 
-export default {
+export default defineComponent({
   components: {
     boat,
     boatList,
@@ -138,7 +138,7 @@ export default {
       boatReservation
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
