@@ -1,10 +1,9 @@
 <template>
   <login :show="!auth"></login>
+  <date/>
   <div class="uk-container">
     <filterses></filterses>
   </div>
-  <date/>
-
   <div class="uk-container">
     <transition name="fade" mode="out-in">
       <boat-list :key="activeBoats.length">
