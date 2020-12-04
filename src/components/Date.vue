@@ -2,12 +2,12 @@
   <div class="uk-section uk-section-muted uk-margin-small uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
-        <label :class="{'uk-background-default': state.day === state.today}"
+        <label :class="{'button-group-active': state.day === state.today}"
                class="uk-button uk-button-default uk-width-1-1">
           <input v-model="state.day" :value="state.today" class="uk-hidden" name="start-day" type="radio"/>
           Vandaag
         </label>
-        <label :class="{'uk-background-default': state.day === state.tomorrow}"
+        <label :class="{'button-group-active': state.day === state.tomorrow}"
                class="uk-button uk-button-default uk-width-1-1">
           <input v-model="state.day" :value="state.tomorrow" class="uk-hidden" name="start-day" type="radio"/>
           Morgen
@@ -83,7 +83,7 @@ export default defineComponent({
     const state = reactive({
       day: '',
       start: '08:00',
-      end: '08:30',
+      end: '09:00',
       today: format(now, dateFormat),
       tomorrow: format(addDays(now, 1), dateFormat),
       showReservations: false
@@ -95,18 +95,18 @@ export default defineComponent({
       let hour = 0
       const _starts = []
       if (state.day === state.today) {
-        hour = getHours(now)
+        hour = getHours(now) + 1
 
         if (getMinutes(now) < 30) {
           _starts.push(`${hour.toString().padStart(2, '0')}:30`)
         }
-
-        hour += 1
       }
 
       for (let i = hour; i <= 22; i++) {
-        _starts.push(`${i.toString().padStart(2, '0')}:00`)
-        _starts.push(`${i.toString().padStart(2, '0')}:30`)
+        _starts.push(
+          `${i.toString().padStart(2, '0')}:00`,
+          `${i.toString().padStart(2, '0')}:30`
+        )
       }
 
       // 23:30 is only for ends
@@ -150,3 +150,25 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss" scoped>
+.uk-button-group {
+  :first-child {
+    border-radius: 500px 0 0 500px;
+  }
+  :last-child {
+    border-radius: 0 500px 500px 0;
+  }
+}
+
+.button-group-active {
+  border-color: #1e87f0;
+  color: #1e87f0;
+  z-index: 1;
+
+  &:hover {
+    border-color: darken(#1e87f0, 20%);
+    color: darken(#1e87f0, 20%);
+  }
+}
+</style>
