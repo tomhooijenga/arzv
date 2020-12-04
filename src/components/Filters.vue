@@ -59,22 +59,22 @@
       <div class="uk-margin">
         <label class="uk-form-label">Gewicht</label>
         <div class="uk-flex">
-          <span class="uk-margin-small-right">{{ newFilters.minWeight }}</span>
+          <span class="uk-margin-small-right">{{ newFilters.minWeight || weight.min }}</span>
           <div class="weight-range uk-margin-auto-vertical uk-width-1-1">
             <input v-model="newFilters.minWeight"
                    class="uk-range"
-                   max="100"
-                   min="50"
+                   :min="weight.min"
+                   :max="weight.max"
                    step="5"
                    type="range"/>
             <input v-model="newFilters.maxWeight"
                    class="uk-range"
-                   max="100"
-                   min="50"
+                   :min="weight.min"
+                   :max="weight.max"
                    step="5"
                    type="range"/>
           </div>
-          <span class="uk-margin-small-left">{{ newFilters.maxWeight }}</span>
+          <span class="uk-margin-small-left">{{ newFilters.maxWeight || weight.max }}</span>
         </div>
       </div>
 
@@ -152,6 +152,10 @@ import { useBoats } from '@/effects/use-boats'
 import { isEmpty } from '@/filter'
 import { Filters } from '@/types'
 
+function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
+  return Array.from(new Set(items.map((item) => item[prop])))
+}
+
 export default defineComponent({
   components: {
     Icon,
@@ -208,10 +212,11 @@ export default defineComponent({
     }
 
     const { boats } = useBoats()
-
-    function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
-      return Array.from(new Set(items.map((item) => item[prop])))
-    }
+    const weights = computed(() => {
+      return pluck(boats.value, 'weight').filter((weight) => weight !== null) as number[]
+    })
+    const minWeight = computed(() => Math.min(...weights.value))
+    const maxWeight = computed(() => Math.max(...weights.value))
 
     const types = computed(() => {
       return pluck(boats.value, 'type').sort((a, b) => a.localeCompare(b))
@@ -221,6 +226,10 @@ export default defineComponent({
     return {
       uses,
       types,
+      weight: reactive({
+        min: minWeight,
+        max: maxWeight
+      }),
       showModal,
       filters,
       newFilters,
