@@ -26,6 +26,7 @@ div {
     fill: currentColor;
     height: 1em;
     width: 1em;
+    max-width: unset;
   }
 }
 </style>
