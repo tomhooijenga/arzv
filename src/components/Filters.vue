@@ -15,15 +15,6 @@
       {{ format(filter, value) }}
       <icon class="clear" name="clear"></icon>
     </button>
-
-    <button v-if="filters.minWeight && filters.maxWeight"
-            class="uk-button uk-button-default uk-border-pill uk-margin-right uk-text-nowrap"
-            type="button"
-            @click="removeFilter('minWeight'); removeFilter('maxWeight')"
-    >
-      {{ filters.minWeight }} - {{ filters.maxWeight }} kg
-      <icon class="clear" name="clear"></icon>
-    </button>
   </div>
 
   <modal :show="showModal"
@@ -58,24 +49,11 @@
 
       <div class="uk-margin">
         <label class="uk-form-label">Gewicht</label>
-        <div class="uk-flex">
-          <span class="uk-margin-small-right">{{ newFilters.minWeight || weight.min }}</span>
-          <div class="weight-range uk-margin-auto-vertical uk-width-1-1">
-            <input v-model="newFilters.minWeight"
-                   class="uk-range"
-                   :min="weight.min"
-                   :max="weight.max"
-                   step="5"
-                   type="range"/>
-            <input v-model="newFilters.maxWeight"
-                   class="uk-range"
-                   :min="weight.min"
-                   :max="weight.max"
-                   step="5"
-                   type="range"/>
-          </div>
-          <span class="uk-margin-small-left">{{ newFilters.maxWeight || weight.max }}</span>
-        </div>
+        <double-range-slider @update="newFilters.weight = $event"
+                             :value="newFilters.weight"
+                             :min="weight.min"
+                             :max="weight.max"
+                             step="5"/>
       </div>
 
       <div class="uk-margin">
@@ -144,7 +122,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
+import DoubleRangeSlider from '@/components/DoubleRangeSlider.vue'
 import Icon from '@/components/Icon.vue'
 import Modal from '@/components/Modal.vue'
 import { useFilters } from '@/effects/use-filters'
@@ -158,6 +137,7 @@ function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
 
 export default defineComponent({
   components: {
+    DoubleRangeSlider,
     Icon,
     Modal
   },
@@ -169,21 +149,10 @@ export default defineComponent({
     const newFilters = reactive({ ...filters })
     const activeFilters = computed(() => {
       return Object.fromEntries(
-        Object.entries(filters).filter(([filter, value]) => {
-          if (filter === 'minWeight' || filter === 'maxWeight') {
-            return false
-          }
-          return !isEmpty(value)
-        })
+        Object
+          .entries(filters)
+          .filter(([, value]) => !isEmpty(value))
       )
-    })
-
-    watch(() => newFilters.minWeight, () => {
-      newFilters.maxWeight = Math.max(newFilters.minWeight || 0, newFilters.maxWeight || 0)
-    })
-
-    watch(() => newFilters.maxWeight, () => {
-      newFilters.minWeight = Math.min(newFilters.minWeight || 0, newFilters.maxWeight || 0)
     })
 
     function removeFilter (filter: keyof Filters) {
@@ -196,19 +165,16 @@ export default defineComponent({
       showModal.value = false
     }
 
-    const filterFormats: {
-      [key: string]: (value: string) => string;
-    } = {
-      name: value => `"${value}"`,
-      instruction: value => value ? 'Instructie' : 'Geen instructie',
-      reserved: value => value ? 'Gereserveerd' : 'Niet gereserveerd'
+    const filterFormats: { [key: string]: (value: any) => string } = {
+      name: (value: string) => `"${value}"`,
+      weight: ({ min, max }: { min: number, max: number }) => `${min} - ${max} kg`,
+      instruction: (value: boolean) => value ? 'Instructie' : 'Geen instructie',
+      reserved: (value: boolean) => value ? 'Gereserveerd' : 'Niet gereserveerd'
     }
 
-    function format (filter: string, value: string): string {
-      if (filterFormats[filter]) {
-        return filterFormats[filter](value)
-      }
-      return value
+    function format (filter: string, value: unknown): string {
+      const formatter = filterFormats[filter]
+      return formatter === undefined ? `${value}` : formatter(value)
     }
 
     const { boats } = useBoats()
@@ -257,46 +223,5 @@ export default defineComponent({
 .clear {
   padding: 0 10px;
   cursor: pointer;
-}
-
-.weight-range {
-  @mixin track() {
-    background: none;
-  }
-
-  @mixin thumb() {
-    pointer-events: auto
-  }
-
-  position: relative;
-  background: #ebebeb;
-  height: 3px;
-  border-radius: 500px;
-
-  .uk-range {
-    &::-webkit-slider-runnable-track,
-    &::-webkit-slider-thumb, & {
-      -webkit-appearance: none
-    }
-
-    position: absolute;
-    pointer-events: none;
-
-    &::-webkit-slider-runnable-track {
-      @include track
-    }
-
-    &::-moz-range-track {
-      @include track
-    }
-
-    &::-webkit-slider-thumb {
-      @include thumb
-    }
-
-    &::-moz-range-thumb {
-      @include thumb
-    }
-  }
 }
 </style>

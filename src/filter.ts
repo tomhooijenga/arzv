@@ -24,14 +24,12 @@ const filterFns: {
       return search(value.toLowerCase(), name.toLowerCase())
     })
   },
-  minWeight (list, value: number) {
+  weight (list, { min, max }: {min: number, max: number}) {
     return list.filter(({ weight }) => {
-      return weight === null || weight >= value
-    })
-  },
-  maxWeight (list, value: number) {
-    return list.filter(({ weight }) => {
-      return weight === null || weight <= value
+      if (weight === null) {
+        return true
+      }
+      return min <= weight && weight <= max
     })
   }
 }

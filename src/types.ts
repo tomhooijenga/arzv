@@ -42,8 +42,10 @@ export interface Boat {
 export interface Filters {
   type: string | null;
   use: Boat['use'] | null;
-  minWeight: number | null;
-  maxWeight: number | null;
+  weight: null | {
+    min: number;
+    max: number
+  };
   instruction: boolean | null;
   name: string | null;
   reserved: boolean | null;

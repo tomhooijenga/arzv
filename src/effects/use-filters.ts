@@ -4,8 +4,7 @@ import { Filters } from '@/types'
 const filters = reactive<Filters>({
   type: null,
   use: null,
-  minWeight: null,
-  maxWeight: null,
+  weight: null,
   instruction: null,
   name: '',
   reserved: null
