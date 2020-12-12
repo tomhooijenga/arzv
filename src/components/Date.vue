@@ -164,7 +164,7 @@ export default defineComponent({
 .button-group-active {
   border-color: #1e87f0;
   color: #1e87f0;
-  z-index: 1;
+  z-index: auto;
 
   &:hover {
     border-color: darken(#1e87f0, 20%);

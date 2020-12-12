@@ -149,32 +149,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-.bottom-sheet {
-  position: fixed;
-  width: 100%;
-  background: white;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-  bottom: 0;
-  transform: translateY(100%);
-  transition: transform .2s ease-in-out, height .2s ease-in-out;
-  height: 54px;
-  overscroll-behavior: none;
-}
-
-.show {
-  transform: translateY(0);
-}
-
-.full {
-  height: 100vh;
-  overflow-y: auto;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-</style>

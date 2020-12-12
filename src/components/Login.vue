@@ -92,14 +92,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 img {
   height: 100px;
-}
-
-.uk-section {
-  position: sticky;
-  top: 0;
-  z-index: 1;
 }
 </style>
