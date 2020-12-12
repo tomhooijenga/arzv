@@ -145,7 +145,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 $track-height: 2rem;
-$track-padding: .25rem 0;
+$track-padding: .25rem;
 $slot-width: 100px;
 $guide-color: #e5e5e5;
 $guide-width: 1px;
@@ -169,8 +169,7 @@ $guide-width: 1px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: $track-padding;
-  padding-right: 0.5rem;
+  padding: $track-padding 0.5rem $track-padding 0;
 }
 
 .tracks {
@@ -181,8 +180,7 @@ $guide-width: 1px;
   display: flex;
   width: max-content;
   height: $track-height;
-  padding: $track-padding;
-  padding-left: $slot-width / 2;
+  padding: $track-padding 0 $track-padding ($slot-width / 2);
 
   &-slots {
     padding-left: 0;
@@ -193,7 +191,7 @@ $guide-width: 1px;
     position: absolute;
     content: '';
     background-color: $guide-color;
-    margin-top: $track-height / 2;
+    margin-top: calc(#{$track-height / 2} - 0.5px);
     left: 0;
     height: 1px;
     width: $slot-width / 2;
