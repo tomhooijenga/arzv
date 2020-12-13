@@ -25,10 +25,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/theme";
+
 .uk-card-title {
   width: 70%;
   overflow: hidden;
-  background: #e5e5e5;
+  background: $global-border;
   border-radius: 500px;
   position: relative;
 

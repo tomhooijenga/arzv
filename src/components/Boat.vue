@@ -82,6 +82,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/theme";
+
 .uk-card {
   border: 1px solid transparent;
   transition: border .2s ease-in-out;
@@ -93,7 +95,7 @@ export default defineComponent({
 }
 
 .selected {
-  border-color: #32d296;
+  border-color: $global-success-background;
 }
 
 .close {

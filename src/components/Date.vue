@@ -152,6 +152,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/theme";
+
 .uk-button-group {
   :first-child {
     border-radius: 500px 0 0 500px;
@@ -162,13 +164,13 @@ export default defineComponent({
 }
 
 .button-group-active {
-  border-color: #1e87f0;
-  color: #1e87f0;
-  z-index: auto;
+  border-color: $button-primary-background;
+  color: $button-primary-background;
+  z-index: 1;
 
   &:hover {
-    border-color: darken(#1e87f0, 20%);
-    color: darken(#1e87f0, 20%);
+    border-color: darken($button-primary-background, 20%);
+    color: darken($button-primary-background, 20%);
   }
 }
 </style>

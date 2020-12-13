@@ -144,10 +144,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/theme";
+
 $track-height: 2rem;
 $track-padding: .25rem;
 $slot-width: 100px;
-$guide-color: #e5e5e5;
+$guide-color: $global-border;
+$guide-color-hover: $global-primary-background;
 $guide-width: 1px;
 
 @mixin slot-guides {
@@ -199,7 +202,7 @@ $guide-width: 1px;
   }
 
   &:hover::before {
-    background-color: #1e87f0;
+    background-color: $guide-color-hover;
   }
 }
 
@@ -226,7 +229,7 @@ $guide-width: 1px;
     transition: border-color .2s linear;
 
     .track:hover & {
-      border-color: #1e87f0;
+      border-color: $guide-color-hover;
     }
   }
 }
@@ -235,7 +238,7 @@ $guide-width: 1px;
   width: var(--width);
 
   &-inner {
-    background: #f5f5f5;
+    background: $global-muted-background;
     margin: 0 0.125rem;
     padding: 0 0.125rem;
     line-height: $track-height;
@@ -250,7 +253,7 @@ $guide-width: 1px;
   &::before,
   &::after {
     @include slot-guides();
-    background-color: #1e87f0;
+    background-color: $guide-color-hover;
     opacity: 0;
   }
 

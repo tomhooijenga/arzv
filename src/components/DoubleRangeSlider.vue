@@ -59,29 +59,29 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/theme";
+
+@mixin track() {
+  background: none;
+}
+
+@mixin thumb() {
+  pointer-events: auto
+}
 
 .slider {
-  @mixin track() {
-    background: none;
-  }
-
-  @mixin thumb() {
-    pointer-events: auto
-  }
-
   position: relative;
-  background: #ebebeb;
-  height: 3px;
-  border-radius: 500px;
+  background: $form-range-track-background;
+  height: $form-range-track-height;
 
   .uk-range {
+    position: absolute;
+    pointer-events: none;
+
     &::-webkit-slider-runnable-track,
     &::-webkit-slider-thumb, & {
       -webkit-appearance: none
     }
-
-    position: absolute;
-    pointer-events: none;
 
     &::-webkit-slider-runnable-track {
       @include track
