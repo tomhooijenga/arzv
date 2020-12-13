@@ -43,6 +43,7 @@ export default defineComponent({
   transform: translateY(100%);
   transition: all 0.2s ease-in-out;
   overscroll-behavior: none;
+  height: 54px;
 }
 
 .show {
