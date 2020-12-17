@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, watch } from 'vue'
 import DoubleRangeSlider from '@/components/DoubleRangeSlider.vue'
 import Icon from '@/components/Icon.vue'
 import Modal from '@/components/Modal.vue'
@@ -153,6 +153,10 @@ export default defineComponent({
           .entries(filters)
           .filter(([, value]) => !isEmpty(value))
       )
+    })
+
+    watch(filters, () => {
+      Object.assign(newFilters, filters)
     })
 
     function removeFilter (filter: keyof Filters) {

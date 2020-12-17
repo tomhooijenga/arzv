@@ -2,12 +2,24 @@
   <login :show="!auth"></login>
   <date/>
   <div class="uk-container">
-    <filterses></filterses>
+    <filters />
   </div>
   <div class="uk-container">
     <transition name="fade" mode="out-in">
-      <boat-list :key="activeBoats.length">
-        <template v-if="boats.length === 0">
+      <section v-if="!loading && activeBoats.length === 0"
+               class="uk-padding-large uk-margin-large-top uk-flex uk-flex-center">
+        <icon name="search" class="uk-heading-large uk-margin-right uk-margin-remove-bottom"></icon>
+        <div>
+          <p class="uk-text-meta">Er zijn geen resultaten met deze filters. </p>
+          <button @click="clearFilters"
+                  type="button"
+                  class="uk-button uk-button-default">
+            Filters wissen
+          </button>
+        </div>
+      </section>
+      <boat-list v-else :key="activeBoats.length">
+        <template v-if="loading">
           <boat-placeholder v-for="n in 10"
                             :key="n"/>
         </template>
@@ -29,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { filter } from '@/filter'
 import { checkToken } from '@/arzv'
 import boat from '@/components/Boat.vue'
@@ -45,29 +57,38 @@ import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
 import { areIntervalsOverlapping } from 'date-fns'
+import Icon from '@/components/Icon.vue'
 
 export default defineComponent({
   components: {
+    Icon,
     boat,
     boatList,
     boatPlaceholder,
     date,
-    // can't have shit in detroit
-    filterses: filters,
+    filters,
     login,
     reserve
   },
   setup () {
     const { auth, setAuth } = useAuth()
-    const { filters } = useFilters()
+    const { filters, clearFilters } = useFilters()
     const { boats, loadBoats } = useBoats()
     const { reservations, reservationDate, loadReservations, loadOwnReservations } = useReservations()
 
+    const loading = ref(true)
+
+    function load (auth: Auth): void {
+      loadBoats(auth).then(() => {
+        loading.value = false
+      })
+      loadReservations(auth)
+      loadOwnReservations(auth)
+    }
+
     watch(auth, (to: Auth) => {
       if (to) {
-        loadBoats(to)
-        loadReservations(to)
-        loadOwnReservations(to)
+        load(to)
       }
     })
 
@@ -78,12 +99,10 @@ export default defineComponent({
         valid = await checkToken(auth.value)
       }
 
-      if (!valid) {
-        setAuth(null)
+      if (valid) {
+        load(auth.value)
       } else {
-        loadBoats(auth.value)
-        loadReservations(auth.value)
-        loadOwnReservations(auth.value)
+        setAuth(null)
       }
     })
 
@@ -128,14 +147,14 @@ export default defineComponent({
     })
 
     return {
-      filters,
-      boats,
+      loading,
       activeBoats,
       selected,
       toggle,
       auth,
       reservations,
-      boatReservation
+      boatReservation,
+      clearFilters
     }
   }
 })

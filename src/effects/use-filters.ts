@@ -1,17 +1,23 @@
 import { reactive, watch } from 'vue'
 import { Filters } from '@/types'
 
-const filters = reactive<Filters>({
+const EMPTY = {
   type: null,
   use: null,
   weight: null,
   instruction: null,
   name: '',
   reserved: null
-})
+}
+
+const filters = reactive<Filters>({ ...EMPTY })
 
 function setFilters (to: Filters) {
   Object.assign(filters, to)
+}
+
+function clearFilters () {
+  setFilters(EMPTY)
 }
 
 try {
@@ -30,6 +36,7 @@ watch(filters, (to: Filters) => {
 export function useFilters () {
   return {
     filters,
-    setFilters
+    setFilters,
+    clearFilters
   }
 }
