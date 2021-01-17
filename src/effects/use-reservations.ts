@@ -36,6 +36,13 @@ async function cancelReservation (auth: Auth, reservation: OwnReservation) {
   ])
 }
 
+function pollReservations (auth: Auth) {
+  setInterval(() => {
+    loadReservations(auth)
+    loadOwnReservations(auth)
+  }, 2 * 60 * 1000)
+}
+
 export function useReservations () {
   return {
     reservations,
@@ -44,6 +51,7 @@ export function useReservations () {
     setReservationDate,
     loadReservations,
     loadOwnReservations,
+    pollReservations,
     makeReservation,
     cancelReservation
   }

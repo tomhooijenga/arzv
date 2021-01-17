@@ -74,7 +74,7 @@ export default defineComponent({
     const { auth, setAuth } = useAuth()
     const { filters, clearFilters } = useFilters()
     const { boats, loadBoats } = useBoats()
-    const { reservations, reservationDate, loadReservations, loadOwnReservations } = useReservations()
+    const { reservations, reservationDate, loadReservations, loadOwnReservations, pollReservations } = useReservations()
 
     const loading = ref(true)
 
@@ -84,6 +84,7 @@ export default defineComponent({
       })
       loadReservations(auth)
       loadOwnReservations(auth)
+      pollReservations(auth)
     }
 
     watch(auth, (to: Auth) => {
