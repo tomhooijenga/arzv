@@ -14,7 +14,7 @@
         <div v-for="slot of slots"
              :key="slot"
              class="slot">
-          {{ format('p', slot) }}
+          {{ $formatDate(slot, 'p') }}
         </div>
       </div>
       <div
@@ -52,7 +52,7 @@
         <div v-for="slot of slots"
              :key="slot"
              class="slot">
-          {{ format('p', slot) }}
+          {{ $formatDate(slot, 'p') }}
         </div>
       </div>
     </div>
@@ -63,8 +63,6 @@
 import { computed, defineComponent, PropType } from 'vue'
 import { addMinutes, compareAsc, differenceInMinutes } from 'date-fns'
 import { Reservation } from '@/types'
-import { formatWithOptions } from 'date-fns/fp'
-import nl from 'date-fns/locale/nl'
 
 export default defineComponent({
 
@@ -136,8 +134,7 @@ export default defineComponent({
       tracks,
       first,
       offset,
-      slots,
-      format: formatWithOptions({ locale: nl })
+      slots
     }
   }
 })

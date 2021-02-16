@@ -6,7 +6,7 @@
     </p>
     <template v-for="({date, items}) in ownGrouped"
               :key="date">
-      <h3 class="uk-margin">{{ format('eeee d MMMM', date) }}</h3>
+      <h3 class="uk-margin">{{ $formatDate(date, 'eeee d MMMM') }}</h3>
       <boat-list class="uk-margin-bottom"
                  v-if="boats.length">
         <boat v-for="reservation in items"
@@ -24,7 +24,7 @@
   <section v-for="({date, items}) in allGrouped"
            :key="date"
            class="uk-container uk-container-expand uk-margin">
-    <h3>{{ format('eeee d MMMM', date) }}</h3>
+    <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
     <timeline :reservations="items"/>
   </section>
 </template>
@@ -32,8 +32,6 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { format } from 'date-fns'
-import { formatWithOptions } from 'date-fns/fp'
-import nl from 'date-fns/locale/nl'
 import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
@@ -84,8 +82,7 @@ export default defineComponent({
       allGrouped,
       ownGrouped,
       onCancel,
-      findBoatByName,
-      format: formatWithOptions({ locale: nl })
+      findBoatByName
     }
   }
 })

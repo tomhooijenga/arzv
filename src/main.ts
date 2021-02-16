@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import format from './date-format'
 import './registerServiceWorker'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.config.globalProperties.$formatDate = format
+app.mount('#app')

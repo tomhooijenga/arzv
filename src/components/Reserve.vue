@@ -28,8 +28,8 @@
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} reserveren
         </button>
         <p class="uk-text-center uk-text-meta" v-if="reservationDate">
-          {{ format('eeee d MMMM', reservationDate.start) }} van {{ format('HH:mm', reservationDate.start) }} tot
-          {{ format('HH:mm', reservationDate.end) }}
+          {{ $formatDate(reservationDate.start, 'eeee d MMMM') }} van {{ $formatDate(reservationDate.start, 'p') }} tot
+          {{ $formatDate(reservationDate.end, 'p') }}
         </p>
         <p class="uk-text-center uk-text-meta" v-if="hasCompetition">
           Wedstrijdboten mogen alleen gebruikt worden met toestemming van de wedstrijdcommissie.
@@ -53,8 +53,6 @@ import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import spinner from '@/components/Spinner.vue'
-import { formatWithOptions } from 'date-fns/fp'
-import nl from 'date-fns/locale/nl'
 import { Boat, BoatUse } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import { useReservations } from '@/effects/use-reservations'
@@ -143,8 +141,7 @@ export default defineComponent({
       hasYouth,
       unselectBoat,
       create,
-      reservationDate,
-      format: formatWithOptions({ locale: nl })
+      reservationDate
     }
   }
 })
