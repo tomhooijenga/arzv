@@ -21,6 +21,9 @@
   <hr/>
 
   <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">Ook op het water</h1>
+  <p v-if="!Object.keys(allGrouped).length" class="uk-container uk-container-expand">
+    Er zijn geen andere reserveringen.
+  </p>
   <section v-for="({date, items}) in allGrouped"
            :key="date"
            class="uk-container uk-container-expand uk-margin">
