@@ -1,5 +1,6 @@
 <template>
   <login :show="!auth"></login>
+  <weather />
   <date/>
   <div class="uk-container">
     <filters />
@@ -51,11 +52,13 @@ import date from '@/components/Date.vue'
 import filters from '@/components/Filters.vue'
 import login from '@/components/Login.vue'
 import reserve from '@/components/Reserve.vue'
+import weather from '@/components/Weather.vue'
 import { Auth, Boat } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
+import { useWeather } from '@/effects/use-weather'
 import { areIntervalsOverlapping } from 'date-fns'
 import Icon from '@/components/Icon.vue'
 
@@ -68,13 +71,15 @@ export default defineComponent({
     date,
     filters,
     login,
-    reserve
+    reserve,
+    weather
   },
   setup () {
     const { auth, setAuth } = useAuth()
     const { filters, clearFilters } = useFilters()
     const { boats, loadBoats } = useBoats()
     const { reservations, reservationDate, loadReservations, loadOwnReservations, pollReservations } = useReservations()
+    const { loadWeather, pollWeather } = useWeather()
 
     const loading = ref(true)
 
@@ -84,7 +89,10 @@ export default defineComponent({
       })
       loadReservations(auth)
       loadOwnReservations(auth)
+      loadWeather()
+
       pollReservations(auth)
+      pollWeather()
     }
 
     watch(auth, (to: Auth) => {

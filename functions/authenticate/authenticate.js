@@ -7,7 +7,6 @@ const handler = async function (event) {
     const { body } = event
     const { username, password } = JSON.parse(body)
 
-    // Create own session id the one received from server does not always work
     const response = await fetch('https://roei.arzv.nl/login.php', {
       method: 'POST',
       headers: {

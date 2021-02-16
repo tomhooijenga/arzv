@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-section uk-section-muted uk-margin-small uk-form-stacked">
+  <div class="uk-section uk-section-muted uk-margin-small-bottom uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
         <label :class="{'button-group-active': state.day === state.today}"
@@ -166,7 +166,7 @@ export default defineComponent({
 .button-group-active {
   border-color: $button-primary-background;
   color: $button-primary-background;
-  z-index: 1;
+  z-index: 0;
 
   &:hover {
     border-color: darken($button-primary-background, 20%);

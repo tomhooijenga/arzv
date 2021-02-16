@@ -50,3 +50,10 @@ export interface Filters {
   name: string | null;
   reserved: boolean | null;
 }
+
+export interface Weather {
+  temperature: number;
+  wind: number;
+  gusts: number;
+  ban: { active: false } | {active: true; start: Date}
+}

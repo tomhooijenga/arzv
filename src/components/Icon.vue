@@ -21,12 +21,15 @@ export default defineComponent({
 <style scoped lang="scss">
 div {
   line-height: 1;
+  height: 1em;
+  width: 1em;
 
   &::v-deep(svg) {
     fill: currentColor;
     height: 1em;
     width: 1em;
     max-width: unset;
+    display: block;
   }
 }
 </style>

@@ -1,4 +1,4 @@
-import { Auth, Boat, Reservation, OwnReservation, ReservationDate } from '@/types'
+import { Auth, Boat, Reservation, OwnReservation, ReservationDate, Weather } from '@/types'
 
 const root = '/.netlify/functions/'
 
@@ -127,4 +127,15 @@ export async function getBoats (auth: Auth): Promise<Boat[]> {
   })
   const { boats } = await response.json()
   return boats
+}
+
+export async function getWeather (): Promise<Weather> {
+  const response = await fetch(root + 'weather')
+  const { weather }: { weather: Weather } = await response.json()
+
+  if (weather.ban.active) {
+    weather.ban.start = new Date(weather.ban.start)
+  }
+
+  return weather
 }
