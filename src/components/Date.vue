@@ -62,10 +62,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, watch } from 'vue'
-import { addDays, format, getHours, getMinutes } from 'date-fns'
+import { addDays, format, setHours, startOfDay } from 'date-fns'
 import bottomSheet from '@/components/BottomSheet.vue'
 import reservationsList from '@/components/ReservationsList.vue'
 import { useReservations } from '@/effects/use-reservations'
+import { slotsRange } from '@/lib/time-slots'
 
 const dateFormat = 'yyyy-MM-dd'
 
@@ -92,29 +93,10 @@ export default defineComponent({
     state.day = state.tomorrow
 
     const starts = computed(() => {
-      let hour = 0
-      const _starts = []
-      if (state.day === state.today) {
-        hour = getHours(now) + 1
-
-        _starts.push(`${hour.toString().padStart(2, '0')}:00`)
-
-        if (getMinutes(now) < 30) {
-          _starts.push(`${hour.toString().padStart(2, '0')}:30`)
-        }
-      }
-
-      for (let i = hour; i <= 22; i++) {
-        _starts.push(
-          `${i.toString().padStart(2, '0')}:00`,
-          `${i.toString().padStart(2, '0')}:30`
-        )
-      }
-
-      // 23:30 is only for ends
-      _starts.push('23:00')
-
-      return _starts
+      const now = new Date()
+      const start = state.day === state.today ? now : startOfDay(now)
+      const end = setHours(startOfDay(now), 23)
+      return slotsRange(start, end)
     })
 
     watch(starts, () => {
