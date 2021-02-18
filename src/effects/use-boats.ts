@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Auth, Boat } from '@/types'
-import { getBoats } from '@/arzv'
+import { getBoats } from '@/lib/arzv'
 
 const boats = ref<Boat[]>([])
 

@@ -44,7 +44,7 @@
 import { defineComponent, reactive } from 'vue'
 import modal from '@/components/Modal.vue'
 import spinner from '@/components/Spinner.vue'
-import { authenticate } from '@/arzv'
+import { authenticate } from '@/lib/arzv'
 import { useAuth } from '@/effects/use-auth'
 
 export default defineComponent({

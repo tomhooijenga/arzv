@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Auth, Boat, OwnReservation, Reservation, ReservationDate } from '@/types'
-import { createReservation, deleteReservation, getOwnReservations, getReservations } from '@/arzv'
+import { createReservation, deleteReservation, getOwnReservations, getReservations } from '@/lib/arzv'
 
 const reservations = ref<Reservation[]>([])
 const ownReservations = ref<OwnReservation[]>([])

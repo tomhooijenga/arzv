@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, reactive, watch, computed } from 'vue'
-import { checkReservation } from '@/arzv'
+import { checkReservation } from '@/lib/arzv'
 import bottomSheet from '@/components/BottomSheet.vue'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'

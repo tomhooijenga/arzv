@@ -43,8 +43,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
-import { filter } from '@/filter'
-import { checkToken } from '@/arzv'
+import { filter } from '@/lib/filter'
+import { checkToken } from '@/lib/arzv'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
 import boatPlaceholder from '@/components/BoatPlaceholder.vue'

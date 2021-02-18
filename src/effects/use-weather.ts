@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { Weather } from '@/types'
-import { getWeather } from '@/arzv'
+import { getWeather } from '@/lib/arzv'
 
 const weather = ref<Weather>()
 const showBan = ref(false)

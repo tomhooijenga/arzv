@@ -128,7 +128,7 @@ import Icon from '@/components/Icon.vue'
 import Modal from '@/components/Modal.vue'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
-import { isEmpty } from '@/filter'
+import { isEmpty } from '@/lib/filter'
 import { Filters } from '@/types'
 
 function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {

@@ -97,6 +97,8 @@ export default defineComponent({
       if (state.day === state.today) {
         hour = getHours(now) + 1
 
+        _starts.push(`${hour.toString().padStart(2, '0')}:00`)
+
         if (getMinutes(now) < 30) {
           _starts.push(`${hour.toString().padStart(2, '0')}:30`)
         }
