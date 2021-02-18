@@ -9,7 +9,7 @@
     </span>
     <span v-else
           class="uk-flex uk-flex-middle uk-flex-center">
-      <Icon :name="icon" class="icon"/>
+      <icon :name="icon" class="icon"/>
       <slot></slot>
     </span>
   </transition>

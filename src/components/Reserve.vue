@@ -9,7 +9,7 @@
 
     <template v-slot>
       <div class="uk-container uk-margin-bottom">
-        <boat-list>
+        <boat-list class="uk-margin-large-bottom">
           <boat v-for="boat in boats"
                 :key="boat.name"
                 :boat="boat"
@@ -21,22 +21,27 @@
         <p class="uk-text-center" v-if="!state.valid">
           Deze reservering kan nu niet gemaakt worden. Controleer of de boot bezet is.
         </p>
+        <p class="uk-text-center uk-text-meta" v-if="reservationDate">
+          {{ $formatDate(reservationDate.start, 'eeee d MMMM') }} van {{ $formatDate(reservationDate.start, 'p') }} tot
+          {{ $formatDate(reservationDate.end, 'p') }}
+        </p>
         <button :disabled="!state.valid"
                 class="uk-button uk-button-primary uk-display-block uk-margin-top uk-margin-bottom uk-margin-auto"
                 type="button"
                 @click="create">
           {{ boats.length === 1 ? '1 boot' : `${boats.length} boten` }} reserveren
         </button>
-        <p class="uk-text-center uk-text-meta" v-if="reservationDate">
-          {{ $formatDate(reservationDate.start, 'eeee d MMMM') }} van {{ $formatDate(reservationDate.start, 'p') }} tot
-          {{ $formatDate(reservationDate.end, 'p') }}
-        </p>
-        <p class="uk-text-center uk-text-meta" v-if="hasCompetition">
-          Wedstrijdboten mogen alleen gebruikt worden met toestemming van de wedstrijdcommissie.
-        </p>
-        <p class="uk-text-center uk-text-meta" v-if="hasYouth">
-          Jeugdboten mogen alleen buiten de jeugd bloktijden gebruikt worden.
-        </p>
+        <ul class="uk-list uk-text-center uk-text-meta uk-margin-large-top">
+          <li v-if="weather?.ban.active" class="uk-text-warning">
+            Er geldt een vaarverbod vanaf {{ $formatDate(weather.ban.start, 'PP p') }}
+          </li>
+          <li v-if="hasCompetition">
+            Wedstrijdboten mogen alleen gebruikt worden met toestemming van de wedstrijdcommissie.
+          </li>
+          <li v-if="hasYouth">
+            Jeugdboten mogen alleen buiten de jeugd bloktijden gebruikt worden.
+          </li>
+        </ul>
       </div>
       <div v-if="state.loading"
            class="uk-overlay-default uk-position-cover uk-flex">
@@ -56,6 +61,7 @@ import spinner from '@/components/Spinner.vue'
 import { Boat, BoatUse } from '@/types'
 import { useAuth } from '@/effects/use-auth'
 import { useReservations } from '@/effects/use-reservations'
+import { useWeather } from '@/effects/use-weather'
 
 export default defineComponent({
   props: {
@@ -77,6 +83,7 @@ export default defineComponent({
   setup (props, { emit }) {
     const { auth } = useAuth()
     const { reservationDate, makeReservation } = useReservations()
+    const { weather } = useWeather()
 
     const state = reactive({
       full: false,
@@ -139,6 +146,7 @@ export default defineComponent({
       title,
       hasCompetition,
       hasYouth,
+      weather,
       unselectBoat,
       create,
       reservationDate
