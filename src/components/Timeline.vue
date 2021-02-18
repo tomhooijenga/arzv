@@ -14,7 +14,7 @@
         <div v-for="slot of slots"
              :key="slot"
              class="slot">
-          {{ $formatDate(slot, 'p') }}
+          {{ slot }}
         </div>
       </div>
       <div
@@ -52,7 +52,7 @@
         <div v-for="slot of slots"
              :key="slot"
              class="slot">
-          {{ $formatDate(slot, 'p') }}
+          {{ slot }}
         </div>
       </div>
     </div>
@@ -61,8 +61,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { addMinutes, compareAsc, differenceInMinutes } from 'date-fns'
+import { compareAsc, differenceInMinutes, max, min } from 'date-fns'
 import { Reservation } from '@/types'
+import { slotsRange } from '@/lib/time-slots'
 
 export default defineComponent({
 
@@ -95,9 +96,7 @@ export default defineComponent({
       return groups
     }
 
-    const tracks = computed(() => {
-      return groupByBoat(props.reservations)
-    })
+    const tracks = computed(() => groupByBoat(props.reservations))
 
     const SLOT_WIDTH = 100
 
@@ -111,23 +110,11 @@ export default defineComponent({
         return compareAsc(startA, startB)
       })[0]
     })
-    const slots = computed(() => {
-      const sorted = [...props.reservations].sort(({ start: startA }, { start: startB }) => {
-        return compareAsc(startA, startB)
-      })
 
-      if (!sorted.length) {
-        return []
-      }
-
-      const slots = []
-      const last = sorted[sorted.length - 1].end
-      let current = first.value.start
-      while (current <= last) {
-        slots.push(current)
-        current = addMinutes(current, 30)
-      }
-      return slots
+    const slots = computed<string[]>(() => {
+      const first = min(props.reservations.map(({ start }) => start))
+      const last = max(props.reservations.map(({ end }) => end))
+      return slotsRange(first, last)
     })
 
     return {
