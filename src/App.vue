@@ -171,14 +171,5 @@ export default defineComponent({
 
 <style lang="scss">
 @import '@/assets/uikit';
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity .2s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0
-}
+@import '@/assets/global';
 </style>
