@@ -3,11 +3,10 @@
     <div class="uk-card-header">
       <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': disabled}">
         <span class="uk-width-1-1 uk-text-truncate">{{ boat.name }}</span>
-        <span class="close"
+        <icon :name="icon"
+              class="icon uk-margin-auto-vertical"
               v-if="icon"
-              @click="$emit(icon)">
-          <icon :name="icon"></icon>
-        </span>
+              @click="$emit(icon)" />
       </h3>
     </div>
     <div class=" uk-card-body">
@@ -98,7 +97,7 @@ export default defineComponent({
   border-color: $global-success-background;
 }
 
-.close {
+.icon {
   cursor: pointer;
 }
 </style>
