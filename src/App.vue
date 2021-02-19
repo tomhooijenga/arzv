@@ -138,6 +138,14 @@ export default defineComponent({
       )
     })
 
+    watch(reservedBoats, () => {
+      selected.forEach((boat) => {
+        if (reservedBoats.value.has(boat.name)) {
+          selected.delete(boat)
+        }
+      })
+    })
+
     function boatReservation (boat: string) {
       return reservedBoats.value.get(boat)
     }
