@@ -77,7 +77,7 @@ export default defineComponent({
   setup () {
     const { auth, setAuth } = useAuth()
     const { filters, clearFilters } = useFilters()
-    const { boats, loadBoats } = useBoats()
+    const { boats, loadBoats, isFavorite } = useBoats()
     const { reservations, reservationDate, loadReservations, loadOwnReservations, pollReservations } = useReservations()
     const { loadWeather, pollWeather } = useWeather()
 
@@ -158,6 +158,10 @@ export default defineComponent({
         active = active.filter((boat) => {
           return reservedBoats.value.has(boat.name) === filters.reserved
         })
+      }
+
+      if (filters.favorite !== null) {
+        active = active.filter((boat) => isFavorite(boat) === filters.favorite)
       }
 
       return active

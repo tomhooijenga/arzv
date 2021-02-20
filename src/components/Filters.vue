@@ -114,6 +114,32 @@
           Nee
         </label>
       </div>
+
+      <div class="uk-margin">
+        <span class="uk-form-label">Favoriete boten</span>
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.favorite"
+                 class="uk-radio"
+                 type="radio"
+                 :value="null"/>
+          Alle
+        </label>
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.favorite"
+                 class="uk-radio"
+                 type="radio"
+                 :value="true"/>
+          Ja
+        </label>
+
+        <label class="uk-margin-small-right">
+          <input v-model="newFilters.favorite"
+                 class="uk-radio"
+                 type="radio"
+                 :value="false"/>
+          Nee
+        </label>
+      </div>
     </div>
     <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
     <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer
@@ -173,7 +199,8 @@ export default defineComponent({
       name: (value: string) => `"${value}"`,
       weight: ({ min, max }: { min: number, max: number }) => `${min} - ${max} kg`,
       instruction: (value: boolean) => value ? 'Instructie' : 'Geen instructie',
-      reserved: (value: boolean) => value ? 'Gereserveerd' : 'Niet gereserveerd'
+      reserved: (value: boolean) => value ? 'Gereserveerd' : 'Niet gereserveerd',
+      favorite: (value: boolean) => value ? 'Favoriet' : 'Geen favoriet'
     }
 
     function format (filter: string, value: never): string {

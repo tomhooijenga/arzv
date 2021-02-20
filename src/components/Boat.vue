@@ -1,25 +1,28 @@
 <template>
-  <div class="uk-card uk-card-default uk-card-small" :class="{selected: selected, 'uk-text-muted': disabled}">
+  <div :class="{selected: selected, 'uk-text-muted': disabled}" class="uk-card uk-card-default uk-card-small">
     <div class="uk-card-header">
-      <h3 class="uk-card-title uk-flex" :class="{'uk-text-muted': disabled}">
+      <h3 :class="{'uk-text-muted': disabled}" class="uk-card-title uk-flex">
         <span class="uk-width-1-1 uk-text-truncate">{{ boat.name }}</span>
-        <icon :name="icon"
+        <icon :name="isFavorite(boat) ? 'favorite' : 'favorite_border'"
+              class="icon uk-margin-auto-vertical uk-margin-small-right uk-text-small"
+              @click.stop="toggleFavorite(boat)"/>
+        <icon v-if="icon"
+              :name="icon"
               class="icon uk-margin-auto-vertical"
-              v-if="icon"
-              @click="$emit(icon)" />
+              @click="$emit(icon)"/>
       </h3>
     </div>
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">
         <span class="uk-text-bold">{{ boat.type }}</span>
         <hr class="uk-divider-vertical"/>
-        <span :class="enabled(boat.scull) ? 'uk-text-primary' : ''">
+        <span :class="{'uk-text-primary': enabled(boat.scull)}">
           {{ boat.scull }}
         </span>
-        <span :class="enabled(boat.sweep) ? 'uk-text-primary' : ''">
+        <span :class="{'uk-text-primary': enabled(boat.sweep)}">
           {{ boat.sweep }}
         </span>
-        <span :class="enabled(boat.steer) ? 'uk-text-primary' : ''">
+        <span :class="{'uk-text-primary': enabled(boat.steer)}">
           {{ boat.steer }}
         </span>
       </div>
@@ -29,21 +32,24 @@
         <span v-else>Geen</span>
       </div>
       <div v-if="reservation" class="uk-margin-small-top">
-        Afgeschreven {{ formatTime(reservation.start) }} - {{ formatTime(reservation.end) }}
+        Afgeschreven {{ $formatDate(reservation.start, 'p') }} - {{ $formatDate(reservation.end, 'p') }}
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-import { format } from 'date-fns'
-import { BoatUse } from '@/types'
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
+import { Boat, BoatUse } from '@/types'
 import Icon from '@/components/Icon.vue'
+import { useBoats } from '@/effects/use-boats'
 
 export default defineComponent({
   props: {
-    boat: Object,
+    boat: {
+      type: Object as PropType<Boat>,
+      required: true
+    },
     selected: Boolean,
     disabled: Boolean,
     reservation: Object,
@@ -56,15 +62,15 @@ export default defineComponent({
     Icon
   },
 
-  methods: {
-    enabled (permission) {
+  setup (props) {
+    const { toggleFavorite, isFavorite } = useBoats()
+
+    function enabled (permission: string): boolean {
       return !permission.includes('-')
-    },
-    useClass () {
-      const {
-        id,
-        use
-      } = this.boat
+    }
+
+    function useClass () {
+      const { id, use } = props.boat
 
       return {
         'uk-text-danger': !id,
@@ -72,9 +78,13 @@ export default defineComponent({
         'uk-text-primary': use === BoatUse.Competition,
         'uk-text-warning': use === BoatUse.Youth
       }
-    },
-    formatTime (date) {
-      return format(date, 'HH:mm')
+    }
+
+    return {
+      enabled,
+      useClass,
+      toggleFavorite,
+      isFavorite
     }
   }
 })

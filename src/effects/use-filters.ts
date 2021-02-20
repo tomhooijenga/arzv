@@ -1,13 +1,14 @@
 import { reactive, watch } from 'vue'
 import { Filters } from '@/types'
 
-const EMPTY = {
+const EMPTY: Filters = {
   type: null,
   use: null,
   weight: null,
   instruction: null,
   name: '',
-  reserved: null
+  reserved: null,
+  favorite: null
 }
 
 const filters = reactive<Filters>({ ...EMPTY })

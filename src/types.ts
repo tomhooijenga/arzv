@@ -49,6 +49,7 @@ export interface Filters {
   instruction: boolean | null;
   name: string | null;
   reserved: boolean | null;
+  favorite: boolean | null;
 }
 
 export interface Weather {
