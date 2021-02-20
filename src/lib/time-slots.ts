@@ -16,7 +16,7 @@ export function slotsRange (start: Date, end: Date): string[] {
     slots.push(formatSlot(startHour, false))
   }
 
-  if (getMinutes(start) < 30) {
+  if (getMinutes(start) <= 30) {
     slots.push(formatSlot(startHour, true))
   }
 
