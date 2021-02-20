@@ -29,9 +29,9 @@
               :boat="boat"
               :reservation="boatReservation(boat.name)"
               :selected="selected.has(boat)"
-              :disabled="!boat.id || !!boatReservation(boat.name)"
-              :icon="selected.has(boat) ? 'remove' : 'add'"
-              @click="boat.id && !boatReservation(boat.name) && toggle(boat)"/>
+              :disabled="boatDisabled(boat)"
+              :icon="boatIcon(boat)"
+              @click="!boatDisabled(boat) && toggle(boat)"/>
       </boat-list>
     </transition>
   </div>
@@ -150,6 +150,18 @@ export default defineComponent({
       return reservedBoats.value.get(boat)
     }
 
+    function boatDisabled (boat: Boat): boolean {
+      return !boat.id || boatReservation(boat.name) !== undefined
+    }
+
+    function boatIcon (boat: Boat): string | null {
+      if (boatDisabled(boat)) {
+        return null
+      }
+
+      return selected.has(boat) ? 'remove' : 'add'
+    }
+
     const activeBoats = computed(() => {
       let active = filter(boats.value, filters)
 
@@ -175,6 +187,8 @@ export default defineComponent({
       auth,
       reservations,
       boatReservation,
+      boatDisabled,
+      boatIcon,
       clearFilters
     }
   }
