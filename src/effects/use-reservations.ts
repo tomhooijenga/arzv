@@ -28,6 +28,8 @@ async function makeReservation (auth: Auth, boats: Boat[], date: ReservationDate
 }
 
 async function cancelReservation (auth: Auth, reservation: OwnReservation) {
+  ownReservations.value = ownReservations.value.filter(({ id }) => id !== reservation.id)
+
   await deleteReservation(auth, reservation)
 
   await Promise.all([
