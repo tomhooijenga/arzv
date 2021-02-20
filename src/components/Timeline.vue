@@ -24,7 +24,7 @@
       >
         <div
           v-if="offset(first.start, reservations[0].start)"
-          :style="{ width: offset(first.start, reservations[0].start) + 'px' }"
+          :style="{ '--slots': offset(first.start, reservations[0].start) }"
           class="offset"
         >
           <hr/>
@@ -35,12 +35,12 @@
         >
           <div
             v-if="index > 0 && offset(reservations[index - 1].end, reservation.start)"
-            :style="{ width: offset(reservations[index - 1].end, reservation.start) + 'px' }"
+            :style="{ '--slots': offset(reservations[index - 1].end, reservation.start) }"
             class="offset"
           >
             <hr/>
           </div>
-          <div :style="{ '--width': offset(reservation.start, reservation.end) + 'px' }" class="person">
+          <div :style="{ '--slots': offset(reservation.start, reservation.end) }" class="person">
             <div class="person-inner uk-text-truncate" :title="reservation.person">
               {{ reservation.person }}
             </div>
@@ -98,11 +98,9 @@ export default defineComponent({
 
     const tracks = computed(() => groupByBoat(props.reservations))
 
-    const SLOT_WIDTH = 100
-
     function offset (left: Date, right: Date): number {
       const minutes = differenceInMinutes(right, left)
-      return (Math.abs(minutes) / 30) * SLOT_WIDTH
+      return Math.ceil(Math.abs(minutes) / 30)
     }
 
     const first = computed(() => {
@@ -206,6 +204,7 @@ $guide-width: 1px;
 .offset {
   display: flex;
   box-sizing: border-box;
+  width: calc(var(--slots) * #{$slot-width});
 
   hr {
     flex: 1;
@@ -219,7 +218,7 @@ $guide-width: 1px;
 }
 
 .person {
-  width: var(--width);
+  width: calc(var(--slots) * #{$slot-width});
 
   &-inner {
     background: $global-muted-background;
@@ -242,7 +241,7 @@ $guide-width: 1px;
   }
 
   &::after {
-    margin-left: var(--width)
+    margin-left: calc(var(--slots) * #{$slot-width});
   }
 
   &:hover {
