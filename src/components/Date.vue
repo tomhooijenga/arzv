@@ -55,7 +55,7 @@
       Reserveringen
     </template>
     <template v-slot>
-      <reservations-list/>
+      <reservations-sheet/>
     </template>
   </bottom-sheet>
 </template>
@@ -64,7 +64,7 @@
 import { computed, defineComponent, reactive, watch } from 'vue'
 import { addDays, format, setHours, startOfDay } from 'date-fns'
 import bottomSheet from '@/components/BottomSheet.vue'
-import reservationsList from '@/components/ReservationsList.vue'
+import reservationsSheet from '@/components/ReservationsSheet.vue'
 import { useReservations } from '@/effects/use-reservations'
 import { slotsRange } from '@/lib/time-slots'
 
@@ -74,7 +74,7 @@ export default defineComponent({
 
   components: {
     bottomSheet,
-    reservationsList
+    reservationsSheet
   },
 
   setup () {

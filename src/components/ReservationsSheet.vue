@@ -28,7 +28,8 @@
            :key="date"
            class="uk-container uk-container-expand uk-margin">
     <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
-    <timeline :reservations="items"/>
+<!--    <timeline :reservations="items"/>-->
+    <reservations-mobile :reservations="items"/>
   </section>
 </template>
 
