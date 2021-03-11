@@ -20,7 +20,22 @@
   </div>
   <hr/>
 
-  <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">Ook op het water</h1>
+  <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">
+    Ook op het water
+
+    <span class="uk-button-group">
+      <button @click="view = 'timeline'"
+              :class="{'button-group-active': view === 'timeline'}"
+              class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1">
+        <icon name="sort" />
+      </button>
+      <button @click="view = 'list'"
+              :class="{'button-group-active': view === 'list'}"
+              class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1">
+        <icon name="list" />
+      </button>
+    </span>
+  </h1>
   <p v-if="!Object.keys(allGrouped).length" class="uk-container uk-container-expand">
     Er zijn geen andere reserveringen.
   </p>
@@ -28,28 +43,32 @@
            :key="date"
            class="uk-container uk-container-expand uk-margin">
     <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
-<!--    <timeline :reservations="items"/>-->
-    <reservations-mobile :reservations="items"/>
+    <reservations-list v-if="view === 'list'" :reservations="items"/>
+    <reservations-timeline v-if="view === 'timeline'" :reservations="items"/>
   </section>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { format } from 'date-fns'
 import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
 import boatList from '@/components/BoatList.vue'
-import timeline from '@/components/Timeline.vue'
+import reservationsList from '@/components/ReservationsList.vue'
+import reservationsTimeline from '@/components/ReservationsTimeline.vue'
 import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
 import { OwnReservation } from '@/types'
+import Icon from '@/components/Icon.vue'
 
 export default defineComponent({
 
   components: {
+    Icon,
+    reservationsList,
+    reservationsTimeline,
     boat,
-    boatList,
-    timeline
+    boatList
   },
 
   setup () {
@@ -81,12 +100,15 @@ export default defineComponent({
       return boats.value.find((boat) => boat.name === name)
     }
 
+    const view = ref<'timeline' | 'list'>('timeline')
+
     return {
       boats,
       allGrouped,
       ownGrouped,
       onCancel,
-      findBoatByName
+      findBoatByName,
+      view
     }
   }
 })
