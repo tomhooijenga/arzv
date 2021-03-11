@@ -7,8 +7,8 @@
     <template v-for="({date, items}) in ownGrouped"
               :key="date">
       <h3 class="uk-margin">{{ $formatDate(date, 'eeee d MMMM') }}</h3>
-      <boat-list class="uk-margin-bottom"
-                 v-if="boats.length">
+      <boat-list v-if="boats.length"
+                 class="uk-margin-bottom">
         <boat v-for="reservation in items"
               :key="reservation.start"
               :boat="findBoatByName(reservation.boat)"
@@ -20,32 +20,37 @@
   </div>
   <hr/>
 
-  <h1 class="uk-container uk-container-expand uk-margin-top uk-margin">
-    Ook op het water
+  <div class="uk-container">
+    <h1 class="uk-margin-top uk-margin">
+      Ook op het water
 
-    <span class="uk-button-group">
-      <button @click="view = 'timeline'"
-              :class="{'button-group-active': view === 'timeline'}"
-              class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1">
-        <icon name="sort" />
-      </button>
-      <button @click="view = 'list'"
-              :class="{'button-group-active': view === 'list'}"
-              class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1">
-        <icon name="list" />
-      </button>
-    </span>
-  </h1>
-  <p v-if="!Object.keys(allGrouped).length" class="uk-container uk-container-expand">
-    Er zijn geen andere reserveringen.
-  </p>
-  <section v-for="({date, items}) in allGrouped"
-           :key="date"
-           class="uk-container uk-container-expand uk-margin">
-    <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
-    <reservations-list v-if="view === 'list'" :reservations="items"/>
-    <reservations-timeline v-if="view === 'timeline'" :reservations="items"/>
-  </section>
+      <span class="uk-button-group">
+        <button :class="{'button-group-active': view === 'timeline'}"
+                class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1"
+                @click="view = 'timeline'">
+          <icon name="sort"/>
+        </button>
+        <button :class="{'button-group-active': view === 'list'}"
+                class="uk-button uk-button-default uk-button-small uk-text-large uk-width-1-1"
+                @click="view = 'list'">
+          <icon name="list"/>
+        </button>
+      </span>
+    </h1>
+    <p v-if="!Object.keys(allGrouped).length">
+      Er zijn geen andere reserveringen.
+    </p>
+    <section v-for="({date, items}) in allGrouped"
+             :key="date"
+             class=" uk-margin">
+      <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
+      <div v-if="view === 'list'"
+           class="uk-container-xsmall">
+        <reservations-list v-if="view === 'list'" :reservations="items"/>
+      </div>
+      <reservations-timeline v-if="view === 'timeline'" :reservations="items"/>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">

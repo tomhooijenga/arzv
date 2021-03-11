@@ -36,3 +36,25 @@
     transform: translateX(100%);
   }
 }
+
+.uk-button-group {
+  :first-child {
+    border-radius: 500px 0 0 500px;
+  }
+
+  :last-child {
+    border-radius: 0 500px 500px 0;
+  }
+}
+
+.button-group-active {
+  border-color: $button-primary-background;
+  color: $button-primary-background;
+  z-index: 0;
+
+  &:focus,
+  &:hover {
+    border-color: darken($button-primary-background, 20%);
+    color: darken($button-primary-background, 20%);
+  }
+}

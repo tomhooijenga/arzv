@@ -2,16 +2,18 @@
   <div class="uk-section uk-section-muted uk-margin-small-bottom uk-form-stacked">
     <div class="uk-container">
       <div class="uk-button-group uk-width-1-1">
-        <label :class="{'button-group-active': state.day === state.today}"
-               class="uk-button uk-button-default uk-width-1-1">
-          <input v-model="state.day" :value="state.today" class="uk-hidden" name="start-day" type="radio"/>
+        <button :class="{'button-group-active': state.day === state.today}"
+                class="uk-button uk-button-default uk-width-1-1"
+                type="button"
+                @click="state.day = state.today">
           Vandaag
-        </label>
-        <label :class="{'button-group-active': state.day === state.tomorrow}"
-               class="uk-button uk-button-default uk-width-1-1">
-          <input v-model="state.day" :value="state.tomorrow" class="uk-hidden" name="start-day" type="radio"/>
+        </button>
+        <button :class="{'button-group-active': state.day === state.tomorrow}"
+                class="uk-button uk-button-default uk-width-1-1"
+                type="button"
+                @click="state.day = state.tomorrow">
           Morgen
-        </label>
+        </button>
       </div>
 
       <div class="uk-flex uk-margin-small">
@@ -134,27 +136,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang="scss" scoped>
-@import "@/assets/theme";
-
-.uk-button-group {
-  :first-child {
-    border-radius: 500px 0 0 500px;
-  }
-  :last-child {
-    border-radius: 0 500px 500px 0;
-  }
-}
-
-.button-group-active {
-  border-color: $button-primary-background;
-  color: $button-primary-background;
-  z-index: 0;
-
-  &:hover {
-    border-color: darken($button-primary-background, 20%);
-    color: darken($button-primary-background, 20%);
-  }
-}
-</style>
