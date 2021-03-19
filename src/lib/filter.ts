@@ -15,10 +15,13 @@ function filterByValue<K extends keyof Boat> (property: K): FilterFn {
 const filterFns: {
   [key: string]: FilterFn;
 } = {
-
-  type: filterByValue('type'),
   use: filterByValue('use'),
   instruction: filterByValue('instruction'),
+  type (list, value: string) {
+    return list.filter(({ type }) => {
+      return type.includes(value)
+    })
+  },
   name (list, value: string) {
     return list.filter(({ name }) => {
       return search(value.toLowerCase(), name.toLowerCase())

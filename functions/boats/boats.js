@@ -30,7 +30,7 @@ const handler = async function (event) {
         return {
           id: $('[name="boot_id"]', boat).val() || null,
           name: $('[type="submit"]', boat).val().trim(),
-          type: $('.boot_type_label', boat).text(),
+          type: $('.boot_type_label', boat).text().split('/'),
           instruction: $('.boot_instructie > .badge-success', boat).length === 1,
           use: $('[data-gebruik]', boat).data('gebruik') || 'Buiten gebruik',
           weight: parseInt($('.boot_gewicht', boat).text()) || null,

@@ -215,7 +215,8 @@ export default defineComponent({
     const maxWeight = computed(() => Math.max(...weights.value))
 
     const types = computed(() => {
-      return pluck(boats.value, 'type').sort((a, b) => a.localeCompare(b))
+      const types = pluck(boats.value, 'type').flat()
+      return Array.from(new Set(types)).sort((a, b) => a.localeCompare(b))
     })
     const uses = computed(() => pluck(boats.value, 'use'))
 

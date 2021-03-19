@@ -30,7 +30,7 @@ export enum BoatUse {
 export interface Boat {
   id: string | null;
   name: string;
-  type: string;
+  type: string[];
   use: BoatUse;
   weight: number | null;
   scull: string;

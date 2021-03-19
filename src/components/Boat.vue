@@ -14,7 +14,7 @@
     </div>
     <div class=" uk-card-body">
       <div class="uk-flex uk-flex-between uk-margin-small-bottom">
-        <span class="uk-text-bold">{{ boat.type }}</span>
+        <span class="uk-text-bold">{{ boat.type.join(' / ') }}</span>
         <hr class="uk-divider-vertical"/>
         <span :class="{'uk-text-primary': enabled(boat.scull)}">
           {{ boat.scull }}
