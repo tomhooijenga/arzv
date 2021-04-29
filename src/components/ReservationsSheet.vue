@@ -13,6 +13,7 @@
               :key="reservation.start"
               :boat="findBoatByName(reservation.boat)"
               :reservation="reservation"
+              :disabled="cancelling.has(reservation)"
               icon="clear"
               @clear="onCancel(reservation)"/>
       </boat-list>
@@ -97,8 +98,12 @@ export default defineComponent({
     const allGrouped = computed(() => groupByStart(reservations.value))
     const ownGrouped = computed(() => groupByStart(ownReservations.value))
 
-    function onCancel (reservation: OwnReservation) {
-      cancelReservation(auth.value, reservation)
+    const cancelling = reactive<Set<OwnReservation>>(new Set())
+
+    async function onCancel (reservation: OwnReservation) {
+      cancelling.add(reservation)
+      await cancelReservation(auth.value, reservation)
+      cancelling.delete(reservation)
     }
 
     function findBoatByName (name: string) {
@@ -112,6 +117,7 @@ export default defineComponent({
       allGrouped,
       ownGrouped,
       onCancel,
+      cancelling,
       findBoatByName,
       view
     }
