@@ -1,21 +1,33 @@
-import { ref } from 'vue'
+import { reactive, toRefs } from 'vue'
 import { Auth, Boat, OwnReservation, Reservation, ReservationDate } from '@/types'
 import { createReservation, deleteReservation, getOwnReservations, getReservations } from '@/lib/arzv'
 
-const reservations = ref<Reservation[]>([])
-const ownReservations = ref<OwnReservation[]>([])
-const reservationDate = ref<ReservationDate | null>(null)
+const state = reactive<{
+  reservations: Reservation[]
+  loadingReservations: boolean,
+  ownReservations: OwnReservation[],
+  loadingOwnReservations: boolean,
+  reservationDate: ReservationDate | null
+}>({
+  reservations: [],
+  loadingReservations: true,
+  ownReservations: [],
+  loadingOwnReservations: true,
+  reservationDate: null
+})
 
 async function loadReservations (auth: Auth): Promise<void> {
-  reservations.value = await getReservations(auth)
+  state.reservations = await getReservations(auth)
+  state.loadingReservations = false
 }
 
 async function loadOwnReservations (auth: Auth): Promise<void> {
-  ownReservations.value = await getOwnReservations(auth)
+  state.ownReservations = await getOwnReservations(auth)
+  state.loadingOwnReservations = false
 }
 
 function setReservationDate (date: ReservationDate) {
-  reservationDate.value = date
+  state.reservationDate = date
 }
 
 async function makeReservation (auth: Auth, boats: Boat[], date: ReservationDate) {
@@ -28,8 +40,6 @@ async function makeReservation (auth: Auth, boats: Boat[], date: ReservationDate
 }
 
 async function cancelReservation (auth: Auth, reservation: OwnReservation) {
-  ownReservations.value = ownReservations.value.filter(({ id }) => id !== reservation.id)
-
   await deleteReservation(auth, reservation)
 
   await Promise.all([
@@ -47,9 +57,7 @@ function pollReservations (auth: Auth) {
 
 export function useReservations () {
   return {
-    reservations,
-    ownReservations,
-    reservationDate,
+    ...toRefs(state),
     setReservationDate,
     loadReservations,
     loadOwnReservations,

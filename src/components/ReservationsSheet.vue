@@ -1,23 +1,35 @@
 <template>
   <div class="uk-container">
     <h1 class="uk-margin-top uk-margin">Jouw reserveringen</h1>
-    <p v-if="!Object.keys(ownGrouped).length">
-      Je hebt geen actieve reserveringen.
-    </p>
-    <template v-for="({date, items}) in ownGrouped"
-              :key="date">
-      <h3 class="uk-margin">{{ $formatDate(date, 'eeee d MMMM') }}</h3>
-      <boat-list v-if="boats.length"
-                 class="uk-margin-bottom">
-        <boat v-for="reservation in items"
-              :key="reservation.start"
-              :boat="findBoatByName(reservation.boat)"
-              :reservation="reservation"
-              :disabled="cancelling.has(reservation)"
-              icon="clear"
-              @clear="onCancel(reservation)"/>
-      </boat-list>
-    </template>
+
+    <transition name="fade" mode="out-in">
+      <section v-if="loadingOwnReservations">
+        <span class="uk-h3 uk-margin skeleton-text">woensdag 28 april</span>
+        <boat-list class="uk-margin-bottom">
+          <boat-placeholder />
+        </boat-list>
+      </section>
+
+      <section v-else-if="Object.keys(ownGrouped).length">
+        <template v-for="({date, items}) in ownGrouped"
+                  :key="date">
+          <h3 class="uk-margin">{{ $formatDate(date, 'eeee d MMMM') }}</h3>
+          <boat-list class="uk-margin-bottom">
+            <boat v-for="reservation in items"
+                  :key="reservation.start"
+                  :boat="findBoatByName(reservation.boat)"
+                  :reservation="reservation"
+                  :disabled="cancelling.has(reservation)"
+                  icon="clear"
+                  @clear="onCancel(reservation)"/>
+          </boat-list>
+        </template>
+      </section>
+
+      <p v-else>
+        Je hebt geen actieve reserveringen.
+      </p>
+    </transition>
   </div>
   <hr/>
 
@@ -38,10 +50,12 @@
         </button>
       </span>
     </h1>
-    <p v-if="!Object.keys(allGrouped).length">
-      Er zijn geen andere reserveringen.
-    </p>
-    <section v-for="({date, items}) in allGrouped"
+    <div v-if="loadingReservations" class="uk-margin-xlarge-top uk-margin-xlarge-bottom uk-flex">
+      <spinner />
+    </div>
+
+    <section v-else-if="Object.keys(allGrouped).length"
+             v-for="({date, items}) in allGrouped"
              :key="date"
              class=" uk-margin">
       <h3>{{ $formatDate(date, 'eeee d MMMM') }}</h3>
@@ -51,11 +65,15 @@
       </div>
       <reservations-timeline v-if="view === 'timeline'" :reservations="items"/>
     </section>
+
+    <p v-else>
+      Er zijn geen andere reserveringen.
+    </p>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { format } from 'date-fns'
 import { useAuth } from '@/effects/use-auth'
 import boat from '@/components/Boat.vue'
@@ -66,10 +84,14 @@ import { useBoats } from '@/effects/use-boats'
 import { useReservations } from '@/effects/use-reservations'
 import { OwnReservation } from '@/types'
 import Icon from '@/components/Icon.vue'
+import BoatPlaceholder from '@/components/BoatPlaceholder.vue'
+import Spinner from '@/components/Spinner.vue'
 
 export default defineComponent({
 
   components: {
+    Spinner,
+    BoatPlaceholder,
     Icon,
     reservationsList,
     reservationsTimeline,
@@ -80,7 +102,13 @@ export default defineComponent({
   setup () {
     const { auth } = useAuth()
     const { boats } = useBoats()
-    const { reservations, ownReservations, cancelReservation } = useReservations()
+    const {
+      reservations,
+      loadingReservations,
+      ownReservations,
+      loadingOwnReservations,
+      cancelReservation
+    } = useReservations()
 
     function groupByStart<T extends { start: Date }> (list: Array<T>) {
       const groups: { [key: string]: { date: Date; items: T[] } } = {}
@@ -116,6 +144,8 @@ export default defineComponent({
       boats,
       allGrouped,
       ownGrouped,
+      loadingReservations,
+      loadingOwnReservations,
       onCancel,
       cancelling,
       findBoatByName,
