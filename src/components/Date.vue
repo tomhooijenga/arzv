@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, watch } from 'vue'
-import { addDays, parse, setHours, startOfDay, startOfHour } from 'date-fns'
+import { addDays, getMinutes, parse, setHours, setMinutes, startOfDay, startOfHour } from 'date-fns'
 import formatLocale from '@/lib/date-format'
 import bottomSheet from '@/components/BottomSheet.vue'
 import reservationsSheet from '@/components/ReservationsSheet.vue'
@@ -105,13 +105,16 @@ export default defineComponent({
     })
 
     const starts = computed(() => {
-      const start = state.day === 0 ? now : startOfDay(now)
+      let start: Date
+      if (state.day === 0) {
+        // Round up to next 30 minutes
+        start = setMinutes(now, Math.ceil(getMinutes(now) / 30) * 30)
+      } else {
+        start = startOfDay(now)
+      }
+
       const end = setHours(startOfDay(now), 23)
       return slotsRange(start, end)
-    })
-
-    watch(starts, () => {
-      state.start = starts.value.includes(state.start) ? state.start : starts.value[0]
     })
 
     const ends = computed(() => {
@@ -121,21 +124,26 @@ export default defineComponent({
       ]
     })
 
+    watch(starts, () => {
+      state.start = starts.value.includes(state.start) ? state.start : starts.value[0]
+    })
+
     watch(ends, () => {
       state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
     })
 
-    setReservationDate({
-      start: parse(state.start, 'HH:mm', addDays(now, DEFAULT_DAY)),
-      end: parse(state.end, 'HH:mm', addDays(now, DEFAULT_DAY))
-    })
-    watch(state, () => {
+    watch([() => state.start, () => state.end], () => {
       const day = addDays(now, state.day)
 
       setReservationDate({
         start: parse(state.start, 'HH:mm', day),
         end: parse(state.end, 'HH:mm', day)
       })
+    })
+
+    setReservationDate({
+      start: parse(state.start, 'HH:mm', addDays(now, DEFAULT_DAY)),
+      end: parse(state.end, 'HH:mm', addDays(now, DEFAULT_DAY))
     })
 
     return {
