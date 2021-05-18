@@ -60,7 +60,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, reactive, watch } from 'vue'
-import { addDays, getMinutes, parse, setHours, setMinutes, startOfDay, startOfHour } from 'date-fns'
+import { addDays, getMinutes, parse, setHours, setMinutes, startOfDay } from 'date-fns'
 import formatLocale from '@/lib/date-format'
 import bottomSheet from '@/components/BottomSheet.vue'
 import reservationsSheet from '@/components/ReservationsSheet.vue'
@@ -78,7 +78,6 @@ export default defineComponent({
     const { setReservationDate, reservations } = useReservations()
 
     const now = new Date()
-    const THIRD_DAY_START = startOfHour(setHours(now, 22))
     const DEFAULT_DAY = 1
 
     const state = reactive({
@@ -89,19 +88,11 @@ export default defineComponent({
     })
 
     const days = computed(() => {
-      const options = [
+      return [
         { label: 'vandaag', value: 0 },
-        { label: 'morgen', value: 1 }
+        { label: 'morgen', value: 1 },
+        { label: formatLocale(addDays(now, 2), 'EEEE'), value: 2 }
       ]
-
-      if (now >= THIRD_DAY_START) {
-        options.push({
-          label: formatLocale(addDays(now, 2), 'EEEE'),
-          value: 2
-        })
-      }
-
-      return options
     })
 
     const starts = computed(() => {
