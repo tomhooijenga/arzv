@@ -132,7 +132,7 @@ export default defineComponent({
       state.end = ends.value.includes(state.end) ? state.end : ends.value[0]
     })
 
-    watch([() => state.start, () => state.end], () => {
+    watch(state, () => {
       const day = addDays(now, state.day)
 
       setReservationDate({
