@@ -21,125 +21,160 @@
          @close="showModal = false">
 
     <div class="uk-form-stacked">
-      <div class="uk-margin">
-        <label class="uk-form-label" for="type">Type</label>
-        <select id="type"
-                v-model="newFilters.type"
-                class="uk-select">
-          <option :value="null">Alle</option>
-          <option v-for="type in types"
-                  :key="type">
-            {{ type }}
-          </option>
-        </select>
-      </div>
+      <toggle-section class="uk-margin"
+                      :is-open="true">
+        <template v-slot:header>
+          <label class="uk-form-label" for="type">Type</label>
+        </template>
+        <template v-slot:content>
+          <select id="type"
+                  v-model="newFilters.type"
+                  class="uk-select">
+            <option :value="null">Alle</option>
+            <option v-for="type in types"
+                    :key="type">
+              {{ type }}
+            </option>
+          </select>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <label class="uk-form-label" for="use">Gebruik</label>
-        <select id="use"
-                v-model="newFilters.use"
-                class="uk-select">
-          <option :value="null">Alle</option>
-          <option v-for="use in uses"
-                  :key="use">
-            {{ use }}
-          </option>
-        </select>
-      </div>
+      <toggle-section class="uk-margin"
+                      :is-open="true">
+        <template v-slot:header>
+          <span class="uk-form-label">Gewicht</span>
+        </template>
+        <template v-slot:content>
+          <double-range-slider @update="newFilters.weight = $event"
+                               :value="newFilters.weight"
+                               :min="weight.min"
+                               :max="weight.max"
+                               step="5"/>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <label class="uk-form-label">Gewicht</label>
-        <double-range-slider @update="newFilters.weight = $event"
-                             :value="newFilters.weight"
-                             :min="weight.min"
-                             :max="weight.max"
-                             step="5"/>
-      </div>
+      <toggle-section class="uk-margin"
+                      :is-open="!isEmpty(filters.use)">
+        <template v-slot:header>
+          <label class="uk-form-label" for="use">Gebruik</label>
+        </template>
+        <template v-slot:content>
+          <select id="use"
+                  v-model="newFilters.use"
+                  class="uk-select">
+            <option :value="null">Alle</option>
+            <option v-for="use in uses"
+                    :key="use">
+              {{ use }}
+            </option>
+          </select>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <label class="uk-form-label" for="name">Naam</label>
-        <input id="name"
-               v-model="newFilters.name"
-               class="uk-input"
-               type="text"/>
-      </div>
+      <toggle-section class="uk-margin"
+                      :is-open="!isEmpty(filters.name)">
+        <template v-slot:header>
+          <label class="uk-form-label" for="name">Naam</label>
+        </template>
+        <template v-slot:content>
+          <input id="name"
+                 v-model="newFilters.name"
+                 class="uk-input"
+                 type="text"/>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <span class="uk-form-label">Instructie toegestaan</span>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.instruction"
-                 class="uk-radio"
-                 type="radio"
-                 :value="null"/>
-          Alle
-        </label>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.instruction"
-                 class="uk-radio"
-                 type="radio"
-                 :value="true"/>
-          Ja
-        </label>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.instruction"
-                 class="uk-radio"
-                 type="radio"
-                 :value="false"/>
-          Nee
-        </label>
-      </div>
+      <toggle-section class="uk-margin"
+                      :is-open="!isEmpty(filters.instruction)">
+        <template v-slot:header>
+          <span class="uk-form-label">Instructie toegestaan</span>
+        </template>
+        <template v-slot:content>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.instruction"
+                   class="uk-radio"
+                   type="radio"
+                   :value="null"/>
+            Alle
+          </label>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.instruction"
+                   class="uk-radio"
+                   type="radio"
+                   :value="true"/>
+            Ja
+          </label>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.instruction"
+                   class="uk-radio"
+                   type="radio"
+                   :value="false"/>
+            Nee
+          </label>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <span class="uk-form-label">Gereserveerde boten</span>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.reserved"
-                 class="uk-radio"
-                 type="radio"
-                 :value="null"/>
-          Alle
-        </label>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.reserved"
-                 class="uk-radio"
-                 type="radio"
-                 :value="true"/>
-          Ja
-        </label>
+      <toggle-section class="uk-margin"
+                      :is-open="!isEmpty(filters.reserved)">
+        <template v-slot:header>
+          <span class="uk-form-label">Gereserveerde boten</span>
+        </template>
+        <template v-slot:content>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.reserved"
+                   class="uk-radio"
+                   type="radio"
+                   :value="null"/>
+            Alle
+          </label>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.reserved"
+                   class="uk-radio"
+                   type="radio"
+                   :value="true"/>
+            Ja
+          </label>
 
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.reserved"
-                 class="uk-radio"
-                 type="radio"
-                 :value="false"/>
-          Nee
-        </label>
-      </div>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.reserved"
+                   class="uk-radio"
+                   type="radio"
+                   :value="false"/>
+            Nee
+          </label>
+        </template>
+      </toggle-section>
 
-      <div class="uk-margin">
-        <span class="uk-form-label">Favoriete boten</span>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.favorite"
-                 class="uk-radio"
-                 type="radio"
-                 :value="null"/>
-          Alle
-        </label>
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.favorite"
-                 class="uk-radio"
-                 type="radio"
-                 :value="true"/>
-          Ja
-        </label>
+      <toggle-section class="uk-margin"
+                      :is-open="!isEmpty(filters.favorite)">
+        <template v-slot:header>
+          <span class="uk-form-label">Favoriete boten</span>
+        </template>
+        <template v-slot:content>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.favorite"
+                   class="uk-radio"
+                   type="radio"
+                   :value="null"/>
+            Alle
+          </label>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.favorite"
+                   class="uk-radio"
+                   type="radio"
+                   :value="true"/>
+            Ja
+          </label>
 
-        <label class="uk-margin-small-right">
-          <input v-model="newFilters.favorite"
-                 class="uk-radio"
-                 type="radio"
-                 :value="false"/>
-          Nee
-        </label>
-      </div>
+          <label class="uk-margin-small-right">
+            <input v-model="newFilters.favorite"
+                   class="uk-radio"
+                   type="radio"
+                   :value="false"/>
+            Nee
+          </label>
+        </template>
+      </toggle-section>
     </div>
     <button class="uk-button uk-button-primary" type="button" @click="commitFilters">Filter</button>
     <button class="uk-button uk-button-default uk-margin-left" type="button" @click="showModal = false">Annuleer
@@ -156,6 +191,7 @@ import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
 import { isEmpty } from '@/lib/filter'
 import { Filters } from '@/types'
+import ToggleSection from '@/components/ToggleSection.vue'
 
 function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
   return Array.from(new Set(items.map((item) => item[prop])))
@@ -163,6 +199,7 @@ function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
 
 export default defineComponent({
   components: {
+    ToggleSection,
     DoubleRangeSlider,
     Icon,
     Modal
@@ -231,6 +268,7 @@ export default defineComponent({
       filters,
       newFilters,
       activeFilters,
+      isEmpty,
       format,
       removeFilter,
       commitFilters
