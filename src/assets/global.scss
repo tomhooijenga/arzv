@@ -58,3 +58,6 @@
     color: darken($button-primary-background, 20%);
   }
 }
+.uk-select:not([multiple]):not([size]) option:disabled {
+  color: $form-disabled-color;
+}

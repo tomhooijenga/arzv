@@ -30,10 +30,12 @@
           <select id="type"
                   v-model="newFilters.type"
                   class="uk-select">
-            <option :value="null">Alle</option>
+            <option :value="null">Alle ({{ searchCount('type', null) }})</option>
             <option v-for="type in types"
-                    :key="type">
-              {{ type }}
+                    :value="type"
+                    :key="type"
+                    :disabled="searchCount('type', type) === 0">
+              {{ type }} ({{ searchCount('type', type) }})
             </option>
           </select>
         </template>
@@ -62,10 +64,11 @@
           <select id="use"
                   v-model="newFilters.use"
                   class="uk-select">
-            <option :value="null">Alle</option>
+            <option :value="null">Alle ({{ searchCount('use', null) }})</option>
             <option v-for="use in uses"
+                    :value="use"
                     :key="use">
-              {{ use }}
+              {{ use }} ({{ searchCount('use', use) }})
             </option>
           </select>
         </template>
@@ -90,27 +93,7 @@
           <span class="uk-form-label">Instructie toegestaan</span>
         </template>
         <template v-slot:content>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.instruction"
-                   class="uk-radio"
-                   type="radio"
-                   :value="null"/>
-            Alle
-          </label>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.instruction"
-                   class="uk-radio"
-                   type="radio"
-                   :value="true"/>
-            Ja
-          </label>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.instruction"
-                   class="uk-radio"
-                   type="radio"
-                   :value="false"/>
-            Nee
-          </label>
+          <all-yes-no v-model="newFilters.instruction" filter="instruction" :boats="boats" :filters="newFilters"/>
         </template>
       </toggle-section>
 
@@ -120,28 +103,7 @@
           <span class="uk-form-label">Gereserveerde boten</span>
         </template>
         <template v-slot:content>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.reserved"
-                   class="uk-radio"
-                   type="radio"
-                   :value="null"/>
-            Alle
-          </label>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.reserved"
-                   class="uk-radio"
-                   type="radio"
-                   :value="true"/>
-            Ja
-          </label>
-
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.reserved"
-                   class="uk-radio"
-                   type="radio"
-                   :value="false"/>
-            Nee
-          </label>
+          <all-yes-no v-model="newFilters.reserved"/>
         </template>
       </toggle-section>
 
@@ -151,28 +113,7 @@
           <span class="uk-form-label">Favoriete boten</span>
         </template>
         <template v-slot:content>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.favorite"
-                   class="uk-radio"
-                   type="radio"
-                   :value="null"/>
-            Alle
-          </label>
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.favorite"
-                   class="uk-radio"
-                   type="radio"
-                   :value="true"/>
-            Ja
-          </label>
-
-          <label class="uk-margin-small-right">
-            <input v-model="newFilters.favorite"
-                   class="uk-radio"
-                   type="radio"
-                   :value="false"/>
-            Nee
-          </label>
+          <all-yes-no v-model="newFilters.favorite"/>
         </template>
       </toggle-section>
     </div>
@@ -189,9 +130,10 @@ import Icon from '@/components/Icon.vue'
 import Modal from '@/components/Modal.vue'
 import { useFilters } from '@/effects/use-filters'
 import { useBoats } from '@/effects/use-boats'
-import { isEmpty } from '@/lib/filter'
+import { isEmpty, filter } from '@/lib/filter'
 import { Filters } from '@/types'
 import ToggleSection from '@/components/ToggleSection.vue'
+import AllYesNo from '@/components/AllYesNo.vue'
 
 function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
   return Array.from(new Set(items.map((item) => item[prop])))
@@ -199,6 +141,7 @@ function pluck<T, K extends keyof T> (items: T[], prop: K): T[K][] {
 
 export default defineComponent({
   components: {
+    AllYesNo,
     ToggleSection,
     DoubleRangeSlider,
     Icon,
@@ -257,6 +200,10 @@ export default defineComponent({
     })
     const uses = computed(() => pluck(boats.value, 'use'))
 
+    function searchCount<T extends keyof Filters> (addedFilter: T, value: Filters[T]): number {
+      return filter(boats.value, { ...newFilters, [addedFilter]: value }).length
+    }
+
     return {
       uses,
       types,
@@ -271,7 +218,9 @@ export default defineComponent({
       isEmpty,
       format,
       removeFilter,
-      commitFilters
+      commitFilters,
+      boats,
+      searchCount
     }
   }
 })
