@@ -12,6 +12,10 @@ function filterByValue<K extends keyof Boat> (property: K): FilterFn {
   }
 }
 
+function normalizeSearchTerm (str: string): string {
+  return str.toLowerCase().replace(/[^a-z\d]/g, '')
+}
+
 const filterFns: {
   [key: string]: FilterFn;
 } = {
@@ -24,7 +28,7 @@ const filterFns: {
   },
   name (list, value: string) {
     return list.filter(({ name }) => {
-      return search(value.toLowerCase(), name.toLowerCase())
+      return search(normalizeSearchTerm(value), normalizeSearchTerm(name))
     })
   },
   weight (list, { min, max }: {min: number, max: number}) {
