@@ -29,10 +29,10 @@ export default defineComponent({
   },
   computed: {
     val: {
-      get () {
+      get (): boolean | null {
         return this.modelValue
       },
-      set (value) {
+      set (value: boolean | null) {
         this.$emit('update:modelValue', value)
       }
     }

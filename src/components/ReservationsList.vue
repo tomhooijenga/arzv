@@ -33,7 +33,7 @@ export default defineComponent({
   props: {
     reservations: {
       type: Array as PropType<Reservation[]>,
-      default: []
+      default: () => []
     }
   },
 
